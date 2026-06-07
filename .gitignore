@@ -104,3 +104,7 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# 重いアセット除外
+/Assets/Models/ModularSci-FiInteriorPack/
+/Assets/Models/ModularSci-FiInteriorPack.meta
