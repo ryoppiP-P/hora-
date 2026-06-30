@@ -36,6 +36,8 @@ public class Player : MonoBehaviour {
     [SerializeField] private Interactor interactor;
     [SerializeField] private ThrowableHolder holder;
 
+    [SerializeField] private PlayerWaterEffect waterEffect;
+
     // 状態
     private CharacterController controller;
     private Vector3 velocity;
@@ -56,6 +58,7 @@ public class Player : MonoBehaviour {
     }
 
     void Update() {
+        if (waterEffect != null && waterEffect.IsDead) return;
         var kb = Keyboard.current;
         if (kb == null) return;
 
@@ -109,6 +112,10 @@ public class Player : MonoBehaviour {
             _ => walkSpeed,
         };
 
+        // 水による減速
+        if (waterEffect != null)
+            speed *= waterEffect.SpeedMultiplier;
+
         // しゃがみによるコライダー＆カメラ高さ更新
         UpdateCrouchTransition();
 
@@ -116,8 +123,12 @@ public class Player : MonoBehaviour {
         Vector3 move = transform.right * input.x + transform.forward * input.y;
         if (move.sqrMagnitude > 1f) move.Normalize(); // 斜め入力で速くなるのを防ぐ
 
-        // ジャンプ（しゃがみ中は不可）
-        if (kb.spaceKey.wasPressedThisFrame && isGrounded && state != MoveState.Crouch)
+        // ジャンプ（しゃがみ中・深い水中は不可）
+        bool canJump = isGrounded
+            && state != MoveState.Crouch
+            && (waterEffect == null || waterEffect.SubmergeRatio < 0.6f);
+
+        if (kb.spaceKey.wasPressedThisFrame && canJump)
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
         // 重力
@@ -155,11 +166,15 @@ public class Player : MonoBehaviour {
         float targetHeight = (state == MoveState.Crouch) ? crouchHeight : standHeight;
         float targetCamY = (state == MoveState.Crouch) ? crouchCameraY : standCameraY;
 
-        // CharacterController の高さとセンターを補間
+        // 補間前のheightを覚えておく
+        float prevHeight = controller.height;
+
+        // heightを補間
         controller.height = Mathf.Lerp(controller.height, targetHeight, Time.deltaTime * crouchLerpSpeed);
-        Vector3 c = controller.center;
-        c.y = controller.height * 0.5f;
-        controller.center = c;
+
+        // heightが変わった分、足元が浮く/沈むので位置を補正
+        float heightDiff = controller.height - prevHeight;
+        transform.position += new Vector3(0f, heightDiff * 0.5f, 0f);
 
         // カメラ高さ
         if (cameraTransform != null) {
@@ -168,4 +183,5 @@ public class Player : MonoBehaviour {
             cameraTransform.localPosition = cp;
         }
     }
+
 }

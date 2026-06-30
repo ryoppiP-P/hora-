@@ -7,9 +7,6 @@ public class Interactor : MonoBehaviour {
     [SerializeField] private float rayDistance = 2.0f;
     [SerializeField] private LayerMask interactMask = ~0;
 
-    [Header("UI (îCà”)")]
-    [SerializeField] private InteractUI ui;
-
     private Interactable currentTarget;
     private float holdTimer;
     private bool isHolding;
@@ -64,10 +61,6 @@ public class Interactor : MonoBehaviour {
         if (eReleased && isHolding) {
             Cancel();
         }
-
-        // UIçXêV
-        if (ui != null)
-            ui.UpdateUI(currentTarget, isHolding ? holdTimer : 0f, currentTarget?.HoldDuration ?? 0f);
     }
 
     Interactable RaycastInteractable() {
