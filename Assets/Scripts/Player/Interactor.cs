@@ -2,16 +2,16 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Interactor : MonoBehaviour {
-    [SerializeField] private Camera cam;
-    [SerializeField] private Player player;
-    [SerializeField] private float rayDistance = 2.0f;
-    [SerializeField] private LayerMask interactMask = ~0;
+    [SerializeField] private Camera cam;    // プレイヤーのカメラ
+    [SerializeField] private Player player; // プレイヤー本体
+    [SerializeField] private float rayDistance = 2.0f;  // インタラクト可能な距離
+    [SerializeField] private LayerMask interactMask = ~0;   // インタラクト可能なレイヤーマスク
 
-    private Interactable currentTarget;
-    private float holdTimer;
-    private bool isHolding;
+    private Interactable currentTarget; // 現在のインタラクト対象
+    private float holdTimer;    // ホールド時間計測用
+    private bool isHolding;     // ホールド中かどうか
 
-    public bool IsInteracting => isHolding;
+    public bool IsInteracting => isHolding; // 外部からインタラクト中かどうかゲッター
 
     void Update() {
         var kb = Keyboard.current;

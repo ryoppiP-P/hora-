@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1134916643012058288}
   - component: {fileID: 8081018586458762998}
   - component: {fileID: 5962441090643677807}
+  - component: {fileID: 3499943503623234241}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -179,6 +180,7 @@ MonoBehaviour:
     m_Bits: 64
   interactor: {fileID: 8081018586458762998}
   holder: {fileID: 5962441090643677807}
+  waterEffect: {fileID: 0}
 --- !u!114 &8081018586458762998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,7 +199,6 @@ MonoBehaviour:
   interactMask:
     serializedVersion: 2
     m_Bits: 128
-  ui: {fileID: 0}
 --- !u!114 &5962441090643677807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,6 +221,19 @@ MonoBehaviour:
   trajectoryLine: {fileID: 3621878634070825989}
   trajectorySegments: 30
   trajectoryStep: 0.05
+--- !u!114 &3499943503623234241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 483419438201077424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 246ffd983425b6d4c966abb986289eaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  capacity: 9
 --- !u!1 &2166078224262919949
 GameObject:
   m_ObjectHideFlags: 0
