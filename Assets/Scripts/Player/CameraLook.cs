@@ -28,6 +28,7 @@ public class CameraLook : MonoBehaviour {
     private Vector3 currentBobOffset;
 
     void Update() {
+        if (GrabbableDoor.IsAnyGrabbing) return;
         HandleLook();
         HandleHeadBob();
     }

@@ -2,10 +2,10 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
-public class Throwable : Interactable {
+public class Throwable : MonoBehaviour {
     [SerializeField] private string displayName = "空き缶";
 
-    // 着地イベント（音システムが購読する想定）
+    // 投げた後に地面に着地した時のイベント
     [System.Serializable] public class LandEvent : UnityEvent<Throwable, Collision> { }
     public LandEvent OnLanded;
 
@@ -13,16 +13,11 @@ public class Throwable : Interactable {
     private Collider col;
     private bool isHeld;
 
-    public override string PromptText => $"{displayName} を拾う";
+    public string DisplayName => displayName;
 
     void Awake() {
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
-    }
-
-    public override void OnInteractComplete(Player player) {
-        var holder = player.GetComponent<ThrowableHolder>();
-        if (holder != null) holder.Pickup(this);
     }
 
     public void SetHeld(bool held, Transform parent = null) {
@@ -34,16 +29,14 @@ public class Throwable : Interactable {
             transform.SetParent(parent, worldPositionStays: false);
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
-        }
-        else {
+        } else {
             transform.SetParent(null, worldPositionStays: true);
         }
     }
 
     public void Throw(Vector3 velocity) {
         SetHeld(false);
-        rb.linearVelocity = velocity;        // Unity 6 以降の名前
-        // Unity 2022 以前は rb.velocity = velocity;
+        rb.linearVelocity = velocity;
         rb.angularVelocity = Random.insideUnitSphere * 5f;
     }
 
