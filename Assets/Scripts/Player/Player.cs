@@ -71,6 +71,8 @@ public class Player : MonoBehaviour {
         if (isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
+        if (GrabbableDoor.IsAnyGrabbing) return;
+
         // “ü—Í
         Vector2 input = Vector2.zero;
         if (kb.wKey.isPressed) input.y += 1;
@@ -150,9 +152,7 @@ public class Player : MonoBehaviour {
                 currentStamina = 0f;
                 staminaExhausted = true; // ‹­§•às‚Ö
             }
-        }
-        else {
-            // 12•b‚Å0¨–žƒ^ƒ“
+        } else {    // 12•b‚Å0¨–žƒ^ƒ“
             float recoverPerSec = maxStamina / recoverDuration;
             currentStamina += recoverPerSec * Time.deltaTime;
             if (currentStamina >= maxStamina) {
