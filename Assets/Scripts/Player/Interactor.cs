@@ -13,6 +13,9 @@ public class Interactor : MonoBehaviour {
 
     public bool IsInteracting => isHolding; // 外部からインタラクト中かどうかゲッター
 
+    public Interactable CurrentTarget => currentTarget; // ホールド中の対象
+    public Interactable AimingTarget { get; private set; } // 現在視線が当たっている対象
+
     void Update() {
         var kb = Keyboard.current;
         if (kb == null) return;
@@ -22,6 +25,7 @@ public class Interactor : MonoBehaviour {
 
         // ホールド中は対象を固定（途中で外れたらキャンセル）
         if (!isHolding) currentTarget = hit;
+        AimingTarget = hit;
 
         // 入力
         bool ePressed = kb.eKey.wasPressedThisFrame;

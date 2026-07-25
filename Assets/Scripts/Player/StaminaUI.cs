@@ -1,37 +1,52 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
-public class StaminaUI : MonoBehaviour {
+public class StaminaVisualEffect : MonoBehaviour {
     [SerializeField] private Player player;
-    [SerializeField] private Image fillImage;       // バー本体
-    [SerializeField] private CanvasGroup canvasGroup; // フェード用（任意）
+    [SerializeField] private Volume volume;
 
-    [Header("Colors")]
-    [SerializeField] private Color fullColor = new Color(0.4f, 0.9f, 0.4f, 1f);
-    [SerializeField] private Color lowColor = new Color(0.9f, 0.3f, 0.3f, 1f);
-    [SerializeField] private float lowThreshold = 0.3f;
+    [Header("Threshold")]
+    [Tooltip("この値以下のスタミナ比率から演出開始")]
+    [SerializeField] private float startThreshold = 0.5f;
 
-    [Header("Auto Hide")]
-    [SerializeField] private bool autoHideWhenFull = true;
-    [SerializeField] private float fadeSpeed = 4f;
+    [Header("Vignette")]
+    [SerializeField] private float maxVignetteIntensity = 0.55f;
+    [SerializeField] private Color vignetteColor = Color.black;
+
+    [Header("Smoothing")]
+    [SerializeField] private float lerpSpeed = 4f;
+
+    private Vignette vignette;
+    private float currentWeight = 0f;
+
+    void Start() {
+        if (volume != null && volume.profile.TryGet(out Vignette v)) {
+            vignette = v;
+            vignette.color.overrideState = true;
+            vignette.intensity.overrideState = true;
+            vignette.color.value = vignetteColor;
+            vignette.intensity.value = maxVignetteIntensity;
+        }
+
+        if (volume != null) volume.weight = 0f;
+    }
 
     void Update() {
-        if (player == null || fillImage == null) return;
+        if (player == null || volume == null) return;
 
         float ratio = player.StaminaRatio;
+        float target = 0f;
 
-        // バーの長さ
-        fillImage.fillAmount = ratio;
-
-        // 色（しきい値以下で赤に近づく）
-        fillImage.color = Color.Lerp(lowColor, fullColor, Mathf.InverseLerp(0f, lowThreshold, ratio));
-        // しきい値超えたら fullColor 固定にしたい場合:
-        if (ratio > lowThreshold) fillImage.color = fullColor;
-
-        // 満タン時に自動で隠す
-        if (canvasGroup != null && autoHideWhenFull) {
-            float targetAlpha = (ratio >= 0.999f) ? 0f : 1f;
-            canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, targetAlpha, fadeSpeed * Time.deltaTime);
+        // startThreshold以下で 0→1 に近づく
+        if (ratio < startThreshold) {
+            target = Mathf.InverseLerp(startThreshold, 0f, ratio);
         }
+
+        // 死亡中は他の演出（溺死）に譲る
+        if (player.IsDead) target = 0f;
+
+        currentWeight = Mathf.MoveTowards(currentWeight, target, lerpSpeed * Time.deltaTime);
+        volume.weight = currentWeight;
     }
 }

@@ -33,10 +33,16 @@ public class Player : MonoBehaviour {
     [SerializeField] private LayerMask groundMask;
 
     [Header("Interact")]
-    [SerializeField] private Interactor interactor;
-    [SerializeField] private ThrowableHolder holder;
+    [SerializeField] private Interactor interactor;     // インタラクトを担当するコンポーネント
+    [SerializeField] private ThrowableHolder holder;    // 投擲物の保持・照準を担当するコンポーネント
 
-    [SerializeField] private PlayerWaterEffect waterEffect;
+    [Header("Death")]
+    [SerializeField] private PlayerWaterEffect waterEffect;     // 水中での減速や浸水率計算を担当するコンポーネント
+    [SerializeField] private float drownThreshold = 0.95f;      // 浸水率がこの値を超えると死亡する
+    [SerializeField] private float drownDuration = 3.0f;      // 死亡するまでの秒数
+
+    [Header("UI")]
+    [SerializeField] private InventoryUI inventoryUI;   // インベントリUI（Playerの動き止めるのに使う）
 
     // 状態
     private CharacterController controller;
@@ -50,6 +56,14 @@ public class Player : MonoBehaviour {
     public float StaminaRatio => currentStamina / maxStamina;
     public bool IsMoving { get; private set; }
 
+    private bool isDead = false;    // 死亡フラグ
+    private float drownTimer = 0f;      // 浸水中の経過時間
+    public bool IsDead => isDead;   // 外部から死亡状態を参照するためのプロパティ
+    public float DrownProgress => Mathf.Clamp01(drownTimer / drownDuration); // 浸水中の経過時間の割合（0~1）
+
+    // 死亡通知
+    public event System.Action OnDeath;
+
     void Start() {
         controller = GetComponent<CharacterController>();
         currentStamina = maxStamina;
@@ -58,7 +72,12 @@ public class Player : MonoBehaviour {
     }
 
     void Update() {
-        if (waterEffect != null && waterEffect.IsDead) return;
+        // 死亡チェック
+        if (isDead) return;
+
+        // 水中浸水チェック
+        UpdateDrown();
+
         var kb = Keyboard.current;
         if (kb == null) return;
 
@@ -71,6 +90,7 @@ public class Player : MonoBehaviour {
         if (isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
+        if (inventoryUI != null && inventoryUI.IsOpen) return;
         if (GrabbableDoor.IsAnyGrabbing) return;
 
         // 入力
@@ -101,7 +121,6 @@ public class Player : MonoBehaviour {
         if (locked) {
             input = Vector2.zero;
             wantRun = false;
-            // 必要なら state も Walk に強制
         }
 
         // スタミナ更新
@@ -184,4 +203,22 @@ public class Player : MonoBehaviour {
         }
     }
 
+    void UpdateDrown() {
+        if (waterEffect == null) return;
+        if (waterEffect.IsInWater && waterEffect.SubmergeRatio >= drownThreshold) {
+            drownTimer += Time.deltaTime;
+            if (drownTimer >= drownDuration) {
+                Die();
+            }
+        } else {
+            // 閾値を下回ったらタイマーリセット（顔が水面より上に出れば助かる）
+            drownTimer = Mathf.Max(0f, drownTimer - Time.deltaTime * 2f); // 回復は少し早め
+        }
+    }
+
+    void Die() {
+        isDead = true;
+        Debug.Log($"プレイヤーは死亡した");
+        OnDeath?.Invoke();
+    }
 }

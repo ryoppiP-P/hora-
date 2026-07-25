@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(HingeJoint), typeof(Rigidbody))]
-public class GrabbableDoor : MonoBehaviour {
+public class GrabbableDoor : Interactable {
     [SerializeField] private Camera cam;
-    [SerializeField] private float grabDistance = 1.5f;
+    [SerializeField] private Interactor interactor;
     [SerializeField] private float sensitivity = 2f;   // マウス感度
     [SerializeField] private float openSpeed = 200f;   // ドアの回転速度
 
@@ -15,6 +15,7 @@ public class GrabbableDoor : MonoBehaviour {
     [SerializeField] private InventoryUI inventoryUI;   // インベントリUI
     [SerializeField] private Inventory inventory;       // インベントリ
 
+    public override string PromptText => isLocked ? "鍵がかかっている" : "掴んで開く";
     public bool IsLocked => isLocked;
 
     private HingeJoint hinge;
@@ -41,11 +42,16 @@ public class GrabbableDoor : MonoBehaviour {
         var mouse = Mouse.current;
         if (mouse == null) return;
 
-        if (mouse.leftButton.wasPressedThisFrame) {
-            if (isLocked && IsAimingAtMe()) {
+        bool aimingAtMe = (interactor != null
+            && interactor.AimingTarget as GrabbableDoor == this);
+
+        if (mouse.leftButton.wasPressedThisFrame && aimingAtMe) {
+            if (isLocked) {
                 inventoryUI.OpenForKeySelection(this);
             } else {
-                TryGrab();
+                isGrabbed = true;
+                IsAnyGrabbing = true;
+                targetAngle = hinge.angle;
             }
         }
         if (mouse.leftButton.wasReleasedThisFrame) Release();
@@ -78,47 +84,16 @@ public class GrabbableDoor : MonoBehaviour {
         hinge.motor = m;
     }
 
-    void TryGrab() {
-        if (cam == null) return;
-        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
-        if (Physics.Raycast(ray, out var hit, grabDistance)) {
-            if (hit.collider.gameObject == gameObject
-                || hit.collider.transform.IsChildOf(transform)) {
-                isGrabbed = true;
-                IsAnyGrabbing = true;
-                targetAngle = hinge.angle; // 現在角度から開始
-            }
-        }
-    }
-
-    bool IsAimingAtMe() {
-        if (cam == null) return false;
-        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
-        if (Physics.Raycast(ray, out var hit, grabDistance)) {
-            return hit.collider.gameObject == gameObject
-                || hit.collider.transform.IsChildOf(transform);
-        }
-        return false;
-    }
-
-    // InventoryUI から呼ばれる：選択したアイテムで解錠試行
     public bool TryUnlock(ItemBase item) {
         if (!isLocked) return false;
         if (item == requiredKey) {
             isLocked = false;
-            if (consumeKey) {
-                // インベントリから消費
-                RemoveFromInventory(item);
-            }
+            if (consumeKey) inventory.RemoveOne(item);
             Debug.Log($"{name} を解錠");
             return true;
         }
         Debug.Log("このアイテムじゃ、ない！");
         return false;
-    }
-
-    void RemoveFromInventory(ItemBase item) {
-        inventory.RemoveOne(item);
     }
 
     void Release() {
