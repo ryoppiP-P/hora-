@@ -1,28 +1,19 @@
 using UnityEngine;
-using System;
 
 public class PlayerWaterEffect : MonoBehaviour {
-    [SerializeField] private CharacterController controller;
-    [SerializeField] private Player player;
+    [SerializeField] private CharacterController controller;    // プレイヤーのCharacterController
 
     [Header("Water Drag")]
     [SerializeField] private float minSpeedMultiplier = 0.3f; // 完全水没時の速度倍率
-    [SerializeField] private AnimationCurve dragCurve = AnimationCurve.EaseInOut(0, 1, 1, 0.3f);
-
-    [Header("Drown")]
-    [SerializeField] private float drownThreshold = 0.95f; // この浸水率で死亡
+    [SerializeField] private AnimationCurve dragCurve = AnimationCurve.EaseInOut(0, 1, 1, 0.3f);    // 浸水率に応じた速度倍率のカーブ
 
     private WaterVolume currentWater;
-    private bool isDead = false;
 
     // 現在の浸水率（0 ~ 1）
     public float SubmergeRatio { get; private set; }
     // 速度倍率（外部から参照する用）
     public float SpeedMultiplier { get; private set; } = 1f;
-    public bool IsDead => isDead;
-
-    // 他のシステムから購読できるように
-    public event Action OnDrown;
+    public bool IsInWater => currentWater != null;
 
     void OnTriggerEnter(Collider other) {
         var water = other.GetComponent<WaterVolume>();
@@ -39,8 +30,6 @@ public class PlayerWaterEffect : MonoBehaviour {
     }
 
     void Update() {
-        if (isDead) return;
-
         if (currentWater == null) {
             SubmergeRatio = 0f;
             SpeedMultiplier = 1f;
@@ -57,18 +46,7 @@ public class PlayerWaterEffect : MonoBehaviour {
         float playerHeight = playerTop - playerBottom;
         SubmergeRatio = Mathf.Clamp01(submerged / playerHeight);
 
-        // カーブで速度倍率に変換（直線でもいいけどカーブのほうが自然）
+        // カーブで速度倍率に変換
         SpeedMultiplier = dragCurve.Evaluate(SubmergeRatio);
-
-        // 死亡判定
-        if (SubmergeRatio >= drownThreshold) {
-            Drown();
-        }
-    }
-
-    void Drown() {
-        isDead = true;
-        Debug.Log("プレイヤーは溺死した");
-        OnDrown?.Invoke();
     }
 }
