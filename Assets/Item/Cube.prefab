@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 4422947469119022617}
   - component: {fileID: 2362226701576220467}
   - component: {fileID: 6091504502627288628}
-  - component: {fileID: 4889571648108490846}
   - component: {fileID: -40308058032731637}
+  - component: {fileID: 8949652408765575850}
+  - component: {fileID: 7610893956978988685}
   m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
@@ -129,7 +130,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   holdDuration: 0
   item: {fileID: 11400000, guid: 413163368196bfb448f59d8cde952fee, type: 2}
---- !u!54 &4889571648108490846
+--- !u!114 &-40308058032731637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2852048065335112797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b45eedb9a88d8847adc82f9905ab1ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Throwable
+  displayName: "\u7A7A\u304D\u7F36"
+  OnLanded:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!54 &8949652408765575850
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -156,7 +173,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-40308058032731637
+--- !u!114 &7610893956978988685
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

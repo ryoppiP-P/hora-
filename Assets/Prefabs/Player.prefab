@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 3351686953785488720}
   - component: {fileID: 7760512291522054391}
   - component: {fileID: 6459322619500329634}
-  - component: {fileID: 7799764974211372971}
   - component: {fileID: 3623076577598214003}
   - component: {fileID: 1134916643012058288}
   - component: {fileID: 8081018586458762998}
   - component: {fileID: 5962441090643677807}
   - component: {fileID: 3499943503623234241}
+  - component: {fileID: 592229899465233461}
+  - component: {fileID: 5486877506938929495}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -99,29 +100,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &7799764974211372971
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 483419438201077424}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!143 &3623076577598214003
 CharacterController:
   m_ObjectHideFlags: 0
@@ -159,18 +137,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7242c3debde58e4e999d99f5a35b401, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  walkSpeed: 2.5
-  runSpeed: 5
+  walkSpeed: 5
+  runSpeed: 10
   crouchSpeed: 0.83
   gravity: -9.81
   jumpHeight: 1.2
   standHeight: 1.8
   crouchHeight: 0.9
-  standCameraY: 1.6
-  crouchCameraY: 0.8
+  standCameraY: 0.8
+  crouchCameraY: 0
   crouchLerpSpeed: 10
   cameraTransform: {fileID: 7369820287218973452}
-  maxStamina: 6
+  maxStamina: 10
   recoverDuration: 12
   currentStamina: 0
   groundCheck: {fileID: 5096534849682966127}
@@ -180,7 +158,10 @@ MonoBehaviour:
     m_Bits: 64
   interactor: {fileID: 8081018586458762998}
   holder: {fileID: 5962441090643677807}
-  waterEffect: {fileID: 0}
+  waterEffect: {fileID: 592229899465233461}
+  drownThreshold: 0.95
+  drownDuration: 3
+  inventoryUI: {fileID: 0}
 --- !u!114 &8081018586458762998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,7 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Interactor
   cam: {fileID: 1216577002649136082}
   player: {fileID: 1134916643012058288}
-  rayDistance: 2
+  rayDistance: 3
   interactMask:
     serializedVersion: 2
     m_Bits: 128
@@ -234,6 +215,62 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
   capacity: 9
+--- !u!114 &592229899465233461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 483419438201077424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97d3ac3c129a4584f8f45764740eaa92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWaterEffect
+  controller: {fileID: 3623076577598214003}
+  minSpeedMultiplier: 0.3
+  dragCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0.3
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &5486877506938929495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 483419438201077424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a52928058c36b784a94397883177eab5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StaminaVisualEffect
+  player: {fileID: 1134916643012058288}
+  volume: {fileID: 0}
+  startThreshold: 0.5
+  maxVignetteIntensity: 0.55
+  vignetteColor: {r: 0, g: 0, b: 0, a: 1}
+  lerpSpeed: 4
 --- !u!1 &2166078224262919949
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,9 +505,9 @@ Light:
   serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.9411765, b: 0.8235294, a: 1}
-  m_Intensity: 150
+  m_Intensity: 12
   m_Range: 18
-  m_SpotAngle: 90
+  m_SpotAngle: 100
   m_InnerSpotAngle: 60
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
@@ -730,6 +767,7 @@ MonoBehaviour:
   runBobFreq: 12
   runBobAmpY: 0.07
   runBobAmpX: 0.04
+  inventoryUI: {fileID: 0}
 --- !u!1 &6546096239039809825
 GameObject:
   m_ObjectHideFlags: 0

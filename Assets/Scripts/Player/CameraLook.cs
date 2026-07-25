@@ -22,12 +22,16 @@ public class CameraLook : MonoBehaviour {
     [SerializeField] private float runBobAmpY = 0.07f;
     [SerializeField] private float runBobAmpX = 0.04f;
 
+    [SerializeField] private InventoryUI inventoryUI;   // インベントリUI（カメラの動き止めるのに使う）
+
     private float xRotation = 0f;
     private float bobTimer = 0f;
     // しゃがみでカメラ高さが変わるので、Y基準は毎フレーム現在値を使う
     private Vector3 currentBobOffset;
 
     void Update() {
+        if (player == null || player.IsDead == true) return;
+        if (inventoryUI != null && inventoryUI.IsOpen) return;
         if (GrabbableDoor.IsAnyGrabbing) return;
         HandleLook();
         HandleHeadBob();
