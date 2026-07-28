@@ -67,6 +67,8 @@ public class Player : MonoBehaviour {
     // 死亡通知
     public event System.Action OnDeath;
 
+    private float capsuleBottomOffset;  // カプセルコライダーの底面のY座標（ワールド座標）
+
     void Start() {
         rb = GetComponent<Rigidbody>();
         capsule = GetComponent<CapsuleCollider>();
@@ -75,6 +77,10 @@ public class Player : MonoBehaviour {
         rb.freezeRotation = true;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+
+        // 初期状態での「足元からCenterまでのオフセット」を記録
+        // center.y - height/2 = 底面のPivotからの位置
+        capsuleBottomOffset = capsule.center.y - capsule.height * 0.5f;
 
         currentStamina = maxStamina;
         Cursor.lockState = CursorLockMode.Locked;
@@ -181,7 +187,8 @@ public class Player : MonoBehaviour {
         float targetCamY = (state == MoveState.Crouch) ? crouchCameraY : standCameraY;
 
         capsule.height = Mathf.Lerp(capsule.height, targetHeight, Time.deltaTime * crouchLerpSpeed);
-        capsule.center = new Vector3(0f, capsule.height * 0.5f, 0f);
+        // 初期のオフセットを保ったままheightに追従
+        capsule.center = new Vector3(0f, capsule.height * 0.5f + capsuleBottomOffset, 0f);
 
         if (cameraTransform != null) {
             Vector3 cp = cameraTransform.localPosition;
