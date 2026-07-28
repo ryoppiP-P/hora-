@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(CapsuleCollider))]
 public class Player : MonoBehaviour {
     public enum MoveState { Walk, Run, Crouch }
 
@@ -11,8 +12,8 @@ public class Player : MonoBehaviour {
     [SerializeField] private float crouchSpeed = 0.83f;
 
     [Header("Physics")]
-    [SerializeField] private float gravity = -9.81f;
-    [SerializeField] private float jumpHeight = 1.2f;
+    [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float acceleration = 15f;   // 目標速度への追従の速さ
 
     [Header("Crouch")]
     [SerializeField] private float standHeight = 1.8f;
@@ -45,11 +46,13 @@ public class Player : MonoBehaviour {
     [SerializeField] private InventoryUI inventoryUI;   // インベントリUI（Playerの動き止めるのに使う）
 
     // 状態
-    private CharacterController controller;
-    private Vector3 velocity;
+    private Rigidbody rb;
+    private CapsuleCollider capsule;
     private bool isGrounded;
     private MoveState state = MoveState.Walk;
     private bool staminaExhausted; // 一度切れたら回復するまで走れない
+    private Vector2 moveInput;
+    private bool jumpRequested;
 
     // 公開プロパティ（CameraLook が参照）
     public MoveState CurrentState => state;
@@ -65,17 +68,21 @@ public class Player : MonoBehaviour {
     public event System.Action OnDeath;
 
     void Start() {
-        controller = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
+        capsule = GetComponent<CapsuleCollider>();
+
+        // 念のため
+        rb.freezeRotation = true;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+
         currentStamina = maxStamina;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     void Update() {
-        // 死亡チェック
         if (isDead) return;
-
-        // 水中浸水チェック
         UpdateDrown();
 
         var kb = Keyboard.current;
@@ -84,16 +91,11 @@ public class Player : MonoBehaviour {
         // 接地判定
         if (groundCheck != null)
             isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-        else
-            isGrounded = controller.isGrounded;
 
-        if (isGrounded && velocity.y < 0)
-            velocity.y = -2f;
+        if (inventoryUI != null && inventoryUI.IsOpen) { moveInput = Vector2.zero; return; }
+        if (GrabbableDoor.IsAnyGrabbing) { moveInput = Vector2.zero; return; }
 
-        if (inventoryUI != null && inventoryUI.IsOpen) return;
-        if (GrabbableDoor.IsAnyGrabbing) return;
-
-        // 入力
+        // 入力取得
         Vector2 input = Vector2.zero;
         if (kb.wKey.isPressed) input.y += 1;
         if (kb.sKey.isPressed) input.y -= 1;
@@ -104,80 +106,73 @@ public class Player : MonoBehaviour {
         bool wantCrouch = kb.leftCtrlKey.isPressed;
         IsMoving = input.sqrMagnitude > 0.01f;
 
-        // ステート決定（しゃがみ優先）
-        if (wantCrouch) {
-            state = MoveState.Crouch;
-        }
-        else if (wantRun && IsMoving && !staminaExhausted) {
-            state = MoveState.Run;
-        }
-        else {
-            state = MoveState.Walk;
-        }
+        // ステート
+        if (wantCrouch) state = MoveState.Crouch;
+        else if (wantRun && IsMoving && !staminaExhausted) state = MoveState.Run;
+        else state = MoveState.Walk;
 
         bool locked = (interactor != null && interactor.IsInteracting)
-           || (holder != null && holder.IsAiming);
+                   || (holder != null && holder.IsAiming);
+        if (locked) input = Vector2.zero;
 
-        if (locked) {
-            input = Vector2.zero;
-            wantRun = false;
-        }
+        moveInput = input;
 
-        // スタミナ更新
         UpdateStamina();
-
-        // 速度
-        float speed = state switch {
-            MoveState.Run => runSpeed,
-            MoveState.Crouch => crouchSpeed,
-            _ => walkSpeed,
-        };
-
-        // 水による減速
-        if (waterEffect != null)
-            speed *= waterEffect.SpeedMultiplier;
-
-        // しゃがみによるコライダー＆カメラ高さ更新
         UpdateCrouchTransition();
 
-        // 水平移動
-        Vector3 move = transform.right * input.x + transform.forward * input.y;
-        if (move.sqrMagnitude > 1f) move.Normalize(); // 斜め入力で速くなるのを防ぐ
-
-        // ジャンプ（しゃがみ中・深い水中は不可）
+        // ジャンプ入力（フラグ立てるだけ、実処理はFixedUpdate）
         bool canJump = isGrounded
             && state != MoveState.Crouch
             && (waterEffect == null || waterEffect.SubmergeRatio < 0.6f);
 
         if (kb.spaceKey.wasPressedThisFrame && canJump)
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            jumpRequested = true;
 
-        // 重力
-        velocity.y += gravity * Time.deltaTime;
-
-        // 1回のMoveでまとめて適用（velocityプロパティを正しく取るため）
-        Vector3 finalMove = move * speed + new Vector3(0f, velocity.y, 0f);
-        controller.Move(finalMove * Time.deltaTime);
-
-        // Esc
         if (kb.escapeKey.wasPressedThisFrame)
             Cursor.lockState = CursorLockMode.None;
+    }
+
+    void FixedUpdate() {
+        if (isDead) return;
+
+        // 目標速度
+        float speed = state switch {
+            MoveState.Run => runSpeed,
+            MoveState.Crouch => crouchSpeed,
+            _ => walkSpeed,
+        };
+        if (waterEffect != null) speed *= waterEffect.SpeedMultiplier;
+
+        Vector3 wishDir = transform.right * moveInput.x + transform.forward * moveInput.y;
+        if (wishDir.sqrMagnitude > 1f) wishDir.Normalize();
+
+        Vector3 targetVel = wishDir * speed;
+        Vector3 currentVel = rb.linearVelocity;
+
+        // XZだけ差分を取り、加速度で追従（Yは重力に任せる）
+        Vector3 velChange = new Vector3(
+            targetVel.x - currentVel.x,
+            0f,
+            targetVel.z - currentVel.z
+        );
+        velChange = Vector3.ClampMagnitude(velChange, acceleration * Time.fixedDeltaTime * 10f);
+        rb.AddForce(velChange, ForceMode.VelocityChange);
+
+        // ジャンプ
+        if (jumpRequested) {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+            jumpRequested = false;
+        }
     }
 
     void UpdateStamina() {
         if (state == MoveState.Run) {
             currentStamina -= Time.deltaTime;
-            if (currentStamina <= 0f) {
-                currentStamina = 0f;
-                staminaExhausted = true; // 強制歩行へ
-            }
-        } else {    // 12秒で0→満タン
+            if (currentStamina <= 0f) { currentStamina = 0f; staminaExhausted = true; }
+        } else {
             float recoverPerSec = maxStamina / recoverDuration;
             currentStamina += recoverPerSec * Time.deltaTime;
-            if (currentStamina >= maxStamina) {
-                currentStamina = maxStamina;
-                staminaExhausted = false;
-            }
+            if (currentStamina >= maxStamina) { currentStamina = maxStamina; staminaExhausted = false; }
         }
     }
 
@@ -185,17 +180,9 @@ public class Player : MonoBehaviour {
         float targetHeight = (state == MoveState.Crouch) ? crouchHeight : standHeight;
         float targetCamY = (state == MoveState.Crouch) ? crouchCameraY : standCameraY;
 
-        // 補間前のheightを覚えておく
-        float prevHeight = controller.height;
+        capsule.height = Mathf.Lerp(capsule.height, targetHeight, Time.deltaTime * crouchLerpSpeed);
+        capsule.center = new Vector3(0f, capsule.height * 0.5f, 0f);
 
-        // heightを補間
-        controller.height = Mathf.Lerp(controller.height, targetHeight, Time.deltaTime * crouchLerpSpeed);
-
-        // heightが変わった分、足元が浮く/沈むので位置を補正
-        float heightDiff = controller.height - prevHeight;
-        transform.position += new Vector3(0f, heightDiff * 0.5f, 0f);
-
-        // カメラ高さ
         if (cameraTransform != null) {
             Vector3 cp = cameraTransform.localPosition;
             cp.y = Mathf.Lerp(cp.y, targetCamY, Time.deltaTime * crouchLerpSpeed);
