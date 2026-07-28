@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class PlayerWaterEffect : MonoBehaviour {
-    [SerializeField] private CharacterController controller;    // プレイヤーのCharacterController
+    [SerializeField] private CapsuleCollider capsule;    // プレイヤーのCapsuleCollider
 
     [Header("Water Drag")]
     [SerializeField] private float minSpeedMultiplier = 0.3f; // 完全水没時の速度倍率
@@ -37,8 +37,8 @@ public class PlayerWaterEffect : MonoBehaviour {
         }
 
         // プレイヤーの底面と頂点のY座標
-        float playerBottom = controller.bounds.min.y;
-        float playerTop = controller.bounds.max.y;
+        float playerBottom = capsule.bounds.min.y;
+        float playerTop = capsule.bounds.max.y;
         float waterY = currentWater.GetWaterSurfaceY();
 
         // 浸水率を計算
