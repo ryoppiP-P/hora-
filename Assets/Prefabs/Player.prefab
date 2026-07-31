@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 5486877506938929495}
   - component: {fileID: 2996819957480082378}
   - component: {fileID: 8751059386893198568}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ MonoBehaviour:
   rayDistance: 3
   interactMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 384
 --- !u!114 &5962441090643677807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,7 +308,7 @@ GameObject:
   - component: {fileID: 4248579380562290336}
   - component: {fileID: 3402884486214204828}
   - component: {fileID: 2413834809458624657}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -433,7 +433,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8450442973168447608}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HoldPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -464,7 +464,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5096534849682966127}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GroundCheak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -498,7 +498,7 @@ GameObject:
   - component: {fileID: 9039699315244956549}
   - component: {fileID: 6439515169941796446}
   - component: {fileID: 3476229539074670984}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -641,7 +641,7 @@ GameObject:
   - component: {fileID: 4953342894702273438}
   - component: {fileID: 7511556071652515741}
   - component: {fileID: 3110058338403651772}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -804,7 +804,7 @@ GameObject:
   m_Component:
   - component: {fileID: 321654375015267189}
   - component: {fileID: 3621878634070825989}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: 'TrajectoryLine '
   m_TagString: Untagged
   m_Icon: {fileID: 0}

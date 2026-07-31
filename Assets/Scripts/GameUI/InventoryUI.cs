@@ -22,7 +22,8 @@ public class InventoryUI : MonoBehaviour {
     public bool IsOpen => panel != null && panel.activeSelf;
 
     // 選択モード
-    private GrabbableDoor pendingDoor; // 鍵選択待ちのドア
+    private GrabbableDoor pendingDoor;  // 鍵選択待ちの手動ドア
+    private AutoDoorLock pendingLock;   // 鍵選択待ちの自動ドア
 
     void Start() {
         panel.SetActive(false);
@@ -46,6 +47,7 @@ public class InventoryUI : MonoBehaviour {
             if (IsOpen) {
                 // 選択モード中の閉じは選択キャンセル
                 pendingDoor = null;
+                pendingLock = null;
             }
             Toggle(!IsOpen);
         }
@@ -53,6 +55,7 @@ public class InventoryUI : MonoBehaviour {
         // Escでもキャンセル
         if (IsOpen && kb.escapeKey.wasPressedThisFrame) {
             pendingDoor = null;
+            pendingLock = null;
             Toggle(false);
         }
     }
@@ -72,6 +75,13 @@ public class InventoryUI : MonoBehaviour {
 
     public void OpenForKeySelection(GrabbableDoor door) {
         pendingDoor = door;
+        pendingLock = null;
+        Toggle(true);
+    }
+
+    public void OpenForKeySelection(AutoDoorLock autoLock) {
+        pendingLock = autoLock;
+        pendingDoor = null;
         Toggle(true);
     }
 
@@ -79,10 +89,18 @@ public class InventoryUI : MonoBehaviour {
         var item = inventory.Slots[index]; // まだ取り出さない
         if (item == null) return;
 
-        // 鍵選択モードなら解錠試行
+        // 鍵選択モード（手動ドア）
         if (pendingDoor != null) {
             pendingDoor.TryUnlock(item);
             pendingDoor = null;
+            Toggle(false);
+            return;
+        }
+
+        // 鍵選択モード（自動ドア）
+        if (pendingLock != null) {
+            pendingLock.TryUnlock(item);
+            pendingLock = null;
             Toggle(false);
             return;
         }
