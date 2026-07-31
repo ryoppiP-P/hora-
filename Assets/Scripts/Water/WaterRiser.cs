@@ -5,7 +5,7 @@ public class WaterRiser : MonoBehaviour {
     [SerializeField] private Transform waterTransform;  // “®‚©‚·…iWaterVolumej
 
     [Header("Rising")]
-    [SerializeField] private float riseSpeed = 0.05f;   // 1•b‚ ‚½‚è‚Ìã¸—Êim/sj
+    [SerializeField] private float minutesPerMeter = 10f;  // 1mã¸‚·‚é‚Ì‚É‰½•ª‚©‚©‚é‚©
     [SerializeField] private float maxHeight = 3f;      // ã¸‚ÌãŒÀiƒ[ƒ‹ƒhYj
 
     void Start() {
@@ -20,9 +20,11 @@ public class WaterRiser : MonoBehaviour {
         // ãŒÀ“ž’B‚Å’âŽ~
         if (pos.y >= maxHeight) return;
 
+        // 1•ª = 60•bB 1m / (minutesPerMeter * 60•b) = 1•b‚ ‚½‚è‚Ìã¸—Ê[m]
+        float riseSpeed = 1f / (minutesPerMeter * 60f);
         pos.y += riseSpeed * Time.deltaTime;
-        if (pos.y > maxHeight) pos.y = maxHeight;
 
+        if (pos.y > maxHeight) pos.y = maxHeight;
         waterTransform.position = pos;
     }
 }
