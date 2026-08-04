@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Audio;
 
 /// <summary>
 /// Resources/Audio内のAudioBankを読み込み、SEとBGMを一元管理する。
@@ -33,6 +34,7 @@ public sealed class AudioManager : MonoBehaviour
     }
 
     private const string ResourcePath = "Audio";
+    private const string MixerResourcePath = "Audio/HoraAudioMixer";
     private const int InitialSePoolSize = 16;
     private const int MaximumSePoolSize = 32;
     private const float DistanceUpdateInterval = 0.15f;
@@ -44,6 +46,9 @@ public sealed class AudioManager : MonoBehaviour
     private readonly List<AudioVoice> seVoices = new List<AudioVoice>();
 
     private AudioSource[] bgmSources;
+    private AudioMixer audioMixer;
+    private AudioMixerGroup bgmMixerGroup;
+    private AudioMixerGroup seMixerGroup;
     private int activeBgmSourceIndex;
     private string currentBgmKey;
     private Coroutine bgmFadeCoroutine;
@@ -87,6 +92,7 @@ public sealed class AudioManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         LoadAudioData();
+        LoadAudioMixer();
         CreateSePool();
         CreateBgmSources();
     }
@@ -247,6 +253,34 @@ public sealed class AudioManager : MonoBehaviour
         voice.IsFadingOut = true;
     }
 
+    /// <summary>
+    /// 公開されたAudioMixerパラメーターへ0～1の音量を設定する。
+    /// </summary>
+    internal void SetMixerVolume(string parameterName, float normalizedVolume)
+    {
+        if (audioMixer == null)
+            return;
+
+        float volume = Mathf.Clamp01(normalizedVolume);
+        float decibel = volume <= 0.0001f
+            ? -80f
+            : Mathf.Log10(volume) * 20f;
+
+        if (!audioMixer.SetFloat(parameterName, decibel))
+            Debug.LogWarning($"[Audio] Mixerパラメーターが見つかりません: {parameterName}");
+    }
+
+    /// <summary>
+    /// 公開されたAudioMixerパラメーターの音量を0～1へ戻して取得する。
+    /// </summary>
+    internal float GetMixerVolume(string parameterName)
+    {
+        if (audioMixer == null || !audioMixer.GetFloat(parameterName, out float decibel))
+            return 1f;
+
+        return decibel <= -80f ? 0f : Mathf.Pow(10f, decibel / 20f);
+    }
+
     private void LoadAudioData()
     {
         dataByKey.Clear();
@@ -280,6 +314,29 @@ public sealed class AudioManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void LoadAudioMixer()
+    {
+        audioMixer = Resources.Load<AudioMixer>(MixerResourcePath);
+        if (audioMixer == null)
+        {
+            Debug.LogWarning($"[Audio] AudioMixerが見つかりません: {MixerResourcePath}");
+            return;
+        }
+
+        bgmMixerGroup = FindMixerGroup("BGM");
+        seMixerGroup = FindMixerGroup("SE");
+    }
+
+    private AudioMixerGroup FindMixerGroup(string groupName)
+    {
+        AudioMixerGroup[] groups = audioMixer.FindMatchingGroups(groupName);
+        if (groups.Length > 0)
+            return groups[0];
+
+        Debug.LogWarning($"[Audio] Mixer Groupが見つかりません: {groupName}", audioMixer);
+        return null;
     }
 
     private void CreateSePool()
@@ -323,7 +380,12 @@ public sealed class AudioManager : MonoBehaviour
     {
         source.Stop();
         source.clip = clip;
-        source.outputAudioMixerGroup = data.OutputMixerGroup;
+        // 個別指定がなければ、BGMとSEのカテゴリ別Mixer Groupへ自動で送る。
+        source.outputAudioMixerGroup = data.OutputMixerGroup != null
+            ? data.OutputMixerGroup
+            : data.Category == AudioCategory.BGM
+                ? bgmMixerGroup
+                : seMixerGroup;
         source.pitch = data.GetRandomPitch();
         source.loop = data.Loop;
         source.spatialBlend = data.Use3D ? 1f : 0f;
