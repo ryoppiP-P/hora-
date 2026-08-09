@@ -44,6 +44,7 @@ public class Player : MonoBehaviour {
 
     [Header("UI")]
     [SerializeField] private InventoryUI inventoryUI;   // インベントリUI（Playerの動き止めるのに使う）
+    [SerializeField] private PauseManager pauseManager;
 
     // 状態
     private Rigidbody rb;
@@ -53,6 +54,7 @@ public class Player : MonoBehaviour {
     private bool staminaExhausted; // 一度切れたら回復するまで走れない
     private Vector2 moveInput;
     private bool jumpRequested;
+    private bool inputLocked = false;   // 外部からの入力ロック
 
     // 公開プロパティ（CameraLook が参照）
     public MoveState CurrentState => state;
@@ -98,8 +100,16 @@ public class Player : MonoBehaviour {
         if (groundCheck != null)
             isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if (inventoryUI != null && inventoryUI.IsOpen) { moveInput = Vector2.zero; return; }
-        if (GrabbableDoor.IsAnyGrabbing) { moveInput = Vector2.zero; return; }
+        // 入力を止めるべき状況
+        if (inputLocked
+            || (pauseManager != null && pauseManager.IsPaused)
+            || (inventoryUI != null && inventoryUI.IsOpen)
+            || GrabbableDoor.IsAnyGrabbing
+            || Cursor.lockState != CursorLockMode.Locked) {
+            moveInput = Vector2.zero;
+            IsMoving = false;
+            return;
+        }
 
         // 入力取得
         Vector2 input = Vector2.zero;
@@ -133,9 +143,6 @@ public class Player : MonoBehaviour {
 
         if (kb.spaceKey.wasPressedThisFrame && canJump)
             jumpRequested = true;
-
-        if (kb.escapeKey.wasPressedThisFrame)
-            Cursor.lockState = CursorLockMode.None;
     }
 
     void FixedUpdate() {
@@ -214,5 +221,14 @@ public class Player : MonoBehaviour {
         isDead = true;
         Debug.Log($"プレイヤーは死亡した");
         OnDeath?.Invoke();
+    }
+
+    /// <summary>外部から入力をロック/解除する</summary>
+    public void SetInputLocked(bool locked) {
+        inputLocked = locked;
+        if (locked) {
+            moveInput = Vector2.zero;
+            IsMoving = false;
+        }
     }
 }

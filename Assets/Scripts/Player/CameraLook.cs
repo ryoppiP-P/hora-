@@ -23,18 +23,49 @@ public class CameraLook : MonoBehaviour {
     [SerializeField] private float runBobAmpX = 0.04f;
 
     [SerializeField] private InventoryUI inventoryUI;   // インベントリUI（カメラの動き止めるのに使う）
+    [SerializeField] private PauseManager pauseManager;
+
+    [Header("Cutscene")]
+    [SerializeField] private bool _cutsceneControlled = false;
+    public bool cutsceneControlled {
+        get => _cutsceneControlled;
+        set {
+            if (_cutsceneControlled == value) return;
+            _cutsceneControlled = value;
+
+            // bob状態を完全リセット（復帰時のカクつき防止）
+            Vector3 lp = transform.localPosition;
+            lp -= prevAppliedBob;
+            transform.localPosition = lp;
+            prevAppliedBob = Vector3.zero;
+            currentBobOffset = Vector3.zero;
+            bobTimer = 0f;
+        }
+    }
 
     private float xRotation = 0f;
+    private float yRotation = 0f;
     private float bobTimer = 0f;
     // しゃがみでカメラ高さが変わるので、Y基準は毎フレーム現在値を使う
     private Vector3 currentBobOffset;
     private Vector3 prevAppliedBob = Vector3.zero;
 
+    void Start() {
+        // 設定画面で保存された感度を反映（存在しない場合はInspector値を維持）
+        if (PlayerPrefs.HasKey(SettingsManager.KEY_SENSITIVITY)) {
+            mouseSensitivity = PlayerPrefs.GetFloat(SettingsManager.KEY_SENSITIVITY);
+        }
+    }
 
     void LateUpdate() {
+        if (cutsceneControlled) return;
         if (player == null || player.IsDead == true) return;
         if (inventoryUI != null && inventoryUI.IsOpen) return;
+        if (pauseManager != null && pauseManager.IsPaused) return;
         if (GrabbableDoor.IsAnyGrabbing) return;
+
+        if (Cursor.lockState != CursorLockMode.Locked) return;
+
         HandleLook();
         HandleHeadBob();
     }
@@ -91,4 +122,21 @@ public class CameraLook : MonoBehaviour {
         transform.localPosition = lp;
         prevAppliedBob = currentBobOffset;
     }
+
+    /// <summary>設定画面から感度変更時に呼ばれる（同一シーン内で即反映したい場合用）</summary>
+    public void ApplySensitivity(float value) {
+        mouseSensitivity = value;
+    }
+
+    // ===== カットシーン =====
+    // カットシーン用：外部から角度を直接指定
+    public void SetRotation(float pitch, float yaw) {
+        // pitch = X軸(上下), yaw = Y軸(左右)
+        this.xRotation = pitch;
+        this.yRotation = yaw;
+        transform.localEulerAngles = new Vector3(pitch, 0f, 0f); // カメラ本体
+        if (playerBody != null) playerBody.localEulerAngles = new Vector3(0f, yaw, 0f);
+    }
+
+    public (float pitch, float yaw) GetRotation() => (xRotation, yRotation);
 }

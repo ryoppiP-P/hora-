@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour {
     [Header("Scene")]
     [SerializeField] private string titleSceneName = "Title";
 
+    [Header("Fade")]
+    [SerializeField] private float fadeDuration = 0.5f;
+
     private bool isGameOver = false;
 
     private void Start() {
@@ -33,6 +36,8 @@ public class GameManager : MonoBehaviour {
             titleButton.onClick.AddListener(ReturnToTitle);
         if (clearToTitleButton != null)
             clearToTitleButton.onClick.AddListener(ReturnToTitle);
+
+        FadeManager.FadeIn(fadeDuration);
     }
 
     private void OnDestroy() {
@@ -67,11 +72,12 @@ public class GameManager : MonoBehaviour {
     }
 
     private void Respawn() {
-        // 同シーンを再ロード（最も簡単な方法）
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        // 同シーンをフェードで再ロード
+        string currentScene = SceneManager.GetActiveScene().name;
+        FadeManager.FadeOut(currentScene, fadeDuration);
     }
 
     private void ReturnToTitle() {
-        SceneManager.LoadScene(titleSceneName);
+        FadeManager.FadeOut(titleSceneName, fadeDuration);
     }
 }

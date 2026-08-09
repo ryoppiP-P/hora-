@@ -65,7 +65,7 @@ public class AutoDoor : MonoBehaviour {
 
     /// <summary>外部から開く指示（鍵解錠時などに呼ぶ）</summary>
     public void Open() {
-        CloseInternal(true);
+        OpenInternal(true);
     }
 
     /// <summary>外部から閉じる指示</summary>

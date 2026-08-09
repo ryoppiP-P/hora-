@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7025461567448330605}
   - component: {fileID: 1464539498470641905}
   - component: {fileID: 1088228151363408107}
+  - component: {fileID: -3617725173206901717}
   m_Layer: 7
   m_Name: DoorKey
   m_TagString: Untagged
@@ -127,3 +128,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   holdDuration: 0
   item: {fileID: 11400000, guid: 1c24506c113886a4b8ab542dbb766cdc, type: 2}
+--- !u!114 &-3617725173206901717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 319423079773487643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7813f2bd04e39b741b55863e27bd93a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableHighlight
+  outlineMaterial: {fileID: 2100000, guid: 96224fd5bfa0f7e4d926e19d04cce526, type: 2}
+  includeChildren: 1

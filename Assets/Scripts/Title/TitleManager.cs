@@ -16,6 +16,9 @@ public class TitleManager : MonoBehaviour {
     [Header("Scene")]
     [SerializeField] private string gameSceneName = "GameScene";
 
+    [Header("Fade")]
+    [SerializeField] private float fadeDuration = 0.5f;
+
     private void Start() {
         // タイトルではカーソル表示
         Cursor.lockState = CursorLockMode.None;
@@ -32,6 +35,8 @@ public class TitleManager : MonoBehaviour {
 
         if (closeSettingsButton != null)
             closeSettingsButton.onClick.AddListener(CloseSettings);
+
+        FadeManager.FadeIn(fadeDuration);
     }
 
     private void Update() {
@@ -45,7 +50,7 @@ public class TitleManager : MonoBehaviour {
     }
 
     private void OnStartClicked() {
-        SceneManager.LoadScene(gameSceneName);
+        FadeManager.FadeOut(gameSceneName, fadeDuration);
     }
 
     private void OnSettingsClicked() {
