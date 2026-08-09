@@ -16,6 +16,8 @@ public class Interactor : MonoBehaviour {
     public Interactable CurrentTarget => currentTarget; // ホールド中の対象
     public Interactable AimingTarget { get; private set; } // 現在視線が当たっている対象
 
+    private InteractableHighlight lastHighlight;    // 前フレームのハイライト対象
+
     void Update() {
         var kb = Keyboard.current;
         if (kb == null) return;
@@ -25,6 +27,24 @@ public class Interactor : MonoBehaviour {
 
         // ホールド中は対象を固定（途中で外れたらキャンセル）
         if (!isHolding) currentTarget = hit;
+
+        // ハイライトの切替（AimingTargetが変わった時だけ）
+        if (hit != AimingTarget) {
+            // 前のを消す
+            if (lastHighlight != null) {
+                lastHighlight.SetHighlight(false);
+                lastHighlight = null;
+            }
+            // 新しいのを付ける
+            if (hit != null) {
+                var hl = hit.GetComponent<InteractableHighlight>();
+                if (hl != null) {
+                    hl.SetHighlight(true);
+                    lastHighlight = hl;
+                }
+            }
+        }
+
         AimingTarget = hit;
 
         // 入力
