@@ -27,7 +27,7 @@ public class SettingsManager : MonoBehaviour {
     public const string KEY_BRIGHTNESS = "Brightness";
 
     // デフォルト値
-    public const float DEFAULT_SENSITIVITY = 2.0f;
+    public const float DEFAULT_SENSITIVITY = 1.0f;
     public const float DEFAULT_BRIGHTNESS = 0.0f;
 
     private ColorAdjustments colorAdjustments;

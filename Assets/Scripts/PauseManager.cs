@@ -14,6 +14,8 @@ public class PauseManager : MonoBehaviour {
     [SerializeField] private string titleSceneName = "Title";
     [SerializeField] private float fadeDuration = 0.5f;
 
+    [SerializeField] private CameraLook cameraLook;
+
     public bool IsPaused { get; private set; }
 
     private void Start() {
@@ -26,6 +28,8 @@ public class PauseManager : MonoBehaviour {
     }
 
     private void Update() {
+        if (cameraLook != null && cameraLook.cutsceneControlled) return;
+
         var kb = Keyboard.current;
         if (kb == null) return;
 
