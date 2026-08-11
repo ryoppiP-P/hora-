@@ -72,12 +72,14 @@ public class GameManager : MonoBehaviour {
     }
 
     private void Respawn() {
+        Audio.Post("SE.UI.Confirm");
         // 同シーンをフェードで再ロード
         string currentScene = SceneManager.GetActiveScene().name;
         FadeManager.FadeOut(currentScene, fadeDuration);
     }
 
     private void ReturnToTitle() {
+        Audio.Post("SE.UI.Confirm");
         FadeManager.FadeOut(titleSceneName, fadeDuration);
     }
 }

@@ -42,6 +42,7 @@ public class Throwable : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision) {
         if (isHeld) return;
+        Audio.Post("SE.Player.Can.Impact", transform.position);
         OnLanded?.Invoke(this, collision);
     }
 }

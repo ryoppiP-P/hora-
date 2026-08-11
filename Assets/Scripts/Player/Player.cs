@@ -33,6 +33,11 @@ public class Player : MonoBehaviour {
     [SerializeField] private float groundDistance = 0.2f;
     [SerializeField] private LayerMask groundMask;
 
+    [Header("Footstep SE")]
+    [SerializeField] private float walkStepInterval = 0.5f;        // 歩行時の足音間隔(秒)
+    [SerializeField] private float runStepInterval = 0.35f;        // 走行時の足音間隔(秒)
+    [SerializeField] private float underwaterStepInterval = 0.6f;  // 水中歩行時の足音間隔(秒)
+
     [Header("Interact")]
     [SerializeField] private Interactor interactor;     // インタラクトを担当するコンポーネント
     [SerializeField] private ThrowableHolder holder;    // 投擲物の保持・照準を担当するコンポーネント
@@ -55,6 +60,8 @@ public class Player : MonoBehaviour {
     private Vector2 moveInput;
     private bool jumpRequested;
     private bool inputLocked = false;   // 外部からの入力ロック
+    private float footstepTimer;        // 足音SEの再生間隔カウンタ
+    private bool drowningSoundPlayed = false;
 
     // 公開プロパティ（CameraLook が参照）
     public MoveState CurrentState => state;
@@ -135,6 +142,7 @@ public class Player : MonoBehaviour {
 
         UpdateStamina();
         UpdateCrouchTransition();
+        UpdateFootstepSE();
 
         // ジャンプ入力（フラグ立てるだけ、実処理はFixedUpdate）
         bool canJump = isGrounded
@@ -181,7 +189,11 @@ public class Player : MonoBehaviour {
     void UpdateStamina() {
         if (state == MoveState.Run) {
             currentStamina -= Time.deltaTime;
-            if (currentStamina <= 0f) { currentStamina = 0f; staminaExhausted = true; }
+            if (currentStamina <= 0f) {
+                currentStamina = 0f;
+                if (!staminaExhausted) Audio.Post("SE.Player.Breath.OutOfStamina", transform);
+                staminaExhausted = true;
+            }
         } else {
             float recoverPerSec = maxStamina / recoverDuration;
             currentStamina += recoverPerSec * Time.deltaTime;
@@ -204,16 +216,57 @@ public class Player : MonoBehaviour {
         }
     }
 
+    /// <summary>移動状態に応じて足音SEを一定間隔で再生する</summary>
+    void UpdateFootstepSE() {
+        bool onGround = isGrounded && state != MoveState.Crouch;
+        if (!onGround || !IsMoving) {
+            footstepTimer = 0f;
+            return;
+        }
+
+        bool underwater = waterEffect != null && waterEffect.IsInWater;
+        string key;
+        float interval;
+        if (underwater) {
+            key = "SE.Player.Footstep.WalkUnderwater";
+            interval = underwaterStepInterval;
+        } else if (state == MoveState.Run) {
+            key = "SE.Player.Footstep.Run";
+            interval = runStepInterval;
+        } else {
+            key = "SE.Player.Footstep.Walk";
+            interval = walkStepInterval;
+        }
+
+        footstepTimer -= Time.deltaTime;
+        if (footstepTimer <= 0f) {
+            Audio.Post(key, transform);
+            footstepTimer = interval;
+        }
+    }
+
     void UpdateDrown() {
         if (waterEffect == null) return;
         if (waterEffect.IsInWater && waterEffect.SubmergeRatio >= drownThreshold) {
+            // 溺れ始めた最初の1回だけ再生
+            if (!drowningSoundPlayed) {
+                Audio.Post("SE.Player.Breath.Drowning", transform);
+                drowningSoundPlayed = true;
+            }
+
             drownTimer += Time.deltaTime;
+
             if (drownTimer >= drownDuration) {
                 Die();
             }
         } else {
             // 閾値を下回ったらタイマーリセット（顔が水面より上に出れば助かる）
             drownTimer = Mathf.Max(0f, drownTimer - Time.deltaTime * 2f); // 回復は少し早め
+
+            // 完全に回復したらフラグリセット（再度溺れたら鳴らせる）
+            if (drownTimer <= 0f) {
+                drowningSoundPlayed = false;
+            }
         }
     }
 

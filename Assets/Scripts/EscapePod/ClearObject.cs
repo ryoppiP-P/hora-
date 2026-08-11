@@ -74,6 +74,7 @@ public class ClearObject : Interactable {
                 playerInventory.RemoveOne(item);
             Activate();
         } else {
+            Audio.Post("SE.Player.Console.UnlockError");
             Debug.Log("[ClearObject] 鍵が違う");
         }
     }
@@ -81,6 +82,7 @@ public class ClearObject : Interactable {
     private void Activate() {
         isActivated = true;
         OnActivated?.Invoke();
+        Audio.Post("SE.Player.EscapePod.Unlock", transform.position);
         Debug.Log("[ClearObject] 脱出ポッド起動");
 
         if (steamEffect != null) steamEffect.Play();

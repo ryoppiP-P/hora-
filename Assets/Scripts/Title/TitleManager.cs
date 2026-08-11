@@ -50,20 +50,24 @@ public class TitleManager : MonoBehaviour {
     }
 
     private void OnStartClicked() {
+        Audio.Post("SE.UI.Confirm");
         FadeManager.FadeOut(gameSceneName, fadeDuration);
     }
 
     private void OnSettingsClicked() {
+        Audio.Post("SE.UI.Confirm");
         if (settingsPanel != null)
             settingsPanel.SetActive(true);
     }
 
     public void CloseSettings() {
+        Audio.Post("SE.UI.Confirm");
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
     }
 
     private void OnQuitClicked() {
+        Audio.Post("SE.UI.Confirm");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
