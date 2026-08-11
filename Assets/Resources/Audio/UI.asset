@@ -13,4 +13,39 @@ MonoBehaviour:
   m_Name: UI
   m_EditorClassIdentifier: Assembly-CSharp::AudioBank
   bankType: 2
-  entries: []
+  entries:
+  - key: Confirm
+    clips: []
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 0
+    maxDistance: 25
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
