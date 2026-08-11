@@ -56,6 +56,7 @@ public class PauseManager : MonoBehaviour {
 
     public void Close() {
         if (settingsPanel == null) return;
+        Audio.Post("SE.UI.Confirm");
         settingsPanel.SetActive(false);
         IsPaused = false;
 
@@ -67,6 +68,7 @@ public class PauseManager : MonoBehaviour {
     }
 
     private void OnReturnToTitle() {
+        Audio.Post("SE.UI.Confirm");
         Time.timeScale = 1f;
         FadeManager.FadeOut(titleSceneName, fadeDuration);
     }

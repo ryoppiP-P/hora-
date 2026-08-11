@@ -40,6 +40,7 @@ public class AutoDoorLock : Interactable {
                 playerInventory.RemoveOne(item);
             Unlock();
         } else {
+            Audio.Post("SE.Player.Console.UnlockError");
             Debug.Log("[AutoDoorLock] åÆÇ™à·Ç§");
         }
     }
@@ -47,6 +48,7 @@ public class AutoDoorLock : Interactable {
     private void Unlock() {
         isLocked = false;
         Debug.Log("[AutoDoorLock] âè˘");
+        Audio.Post("SE.Player.Door.Large.Unlock", transform.position);
         door.Open();
     }
 }

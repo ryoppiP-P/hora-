@@ -52,6 +52,7 @@ public class GrabbableDoor : Interactable {
                 isGrabbed = true;
                 IsAnyGrabbing = true;
                 targetAngle = hinge.angle;
+                Audio.Post("SE.Player.Door.Hinged.Open", transform.position);
             }
         }
         if (mouse.leftButton.wasReleasedThisFrame) Release();
@@ -90,8 +91,10 @@ public class GrabbableDoor : Interactable {
             isLocked = false;
             if (consumeKey) inventory.RemoveOne(item);
             Debug.Log($"{name} を解錠");
+            Audio.Post("SE.Player.Door.Key.Unlock", transform.position);
             return true;
         }
+        Audio.Post("SE.Player.Door.Hinged.LockedRattle", transform.position);
         Debug.Log("このアイテムじゃ、ない！");
         return false;
     }

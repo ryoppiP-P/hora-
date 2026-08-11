@@ -83,6 +83,7 @@ public class AutoDoor : MonoBehaviour {
         if (isOpen) return;
         isOpen = true;
         isMoving = true;
+        Audio.Post("SE.Player.Door.AutomaticLarge.Open", transform.position);
 
         if (propagate && linkedDoors != null) {
             foreach (var d in linkedDoors) {

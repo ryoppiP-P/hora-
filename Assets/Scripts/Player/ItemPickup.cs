@@ -20,6 +20,7 @@ public class ItemPickup : Interactable {
         if (inv == null) { Debug.LogWarning("Player ‚É Inventory ‚ª–³‚¢"); return; }
 
         if (inv.TryAdd(item)) {
+            Audio.Post("SE.Player.Item.Pickup", transform.position);
             Destroy(gameObject);
         } else {
             Debug.Log("ƒCƒ“ƒxƒ“ƒgƒŠ‚ª–ž”t");
