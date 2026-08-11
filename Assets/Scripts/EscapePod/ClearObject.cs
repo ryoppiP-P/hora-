@@ -32,6 +32,8 @@ public class ClearObject : Interactable {
     public override string PromptText => "脱出ポッドを起動";
 
     private bool isActivated = false;
+    public event System.Action OnActivated;
+
     private Vector3 hatchStartPos;
     private Vector3 hatchTargetPos;
 
@@ -78,6 +80,7 @@ public class ClearObject : Interactable {
 
     private void Activate() {
         isActivated = true;
+        OnActivated?.Invoke();
         Debug.Log("[ClearObject] 脱出ポッド起動");
 
         if (steamEffect != null) steamEffect.Play();
