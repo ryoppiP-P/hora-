@@ -159,3 +159,7 @@ MonoBehaviour:
   hearThreshold: 0.05
   useDirectionTarget: 0
   alertDuration: 3
+  player: {fileID: 0}
+  attackTriggerDistance: 1.5
+  attackWindupTime: 1
+  attackKillDistance: 2

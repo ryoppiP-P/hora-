@@ -223,6 +223,12 @@ public class Player : MonoBehaviour {
         OnDeath?.Invoke();
     }
 
+    /// <summary>外部から殺す（敵の攻撃など）</summary>
+    public void Kill() {
+        if (isDead) return;
+        Die();
+    }
+
     /// <summary>外部から入力をロック/解除する</summary>
     public void SetInputLocked(bool locked) {
         inputLocked = locked;
