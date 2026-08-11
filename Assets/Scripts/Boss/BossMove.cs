@@ -8,7 +8,8 @@ public class BossMove : MonoBehaviour
     {
         Patrol,      // ƒ‰ƒ“ƒ_ƒ€„‰ñ
         Investigate, // ‰¹‚Ì•·‚±‚¦‚½êŠ‚ÖˆÚ“®
-        Alert        // “’…‚µ‚ÄüˆÍ‚ğŒx‰ú
+        Alert,       // “’…‚µ‚ÄüˆÍ‚ğŒx‰ú
+        Attack       // ƒvƒŒƒCƒ„[‚ğUŒ‚
     }
 
     [Header("AIó‘Ô")]
@@ -30,8 +31,15 @@ public class BossMove : MonoBehaviour
     [Header("Œx‰úİ’è")]
     [SerializeField] private float alertDuration = 3f;        // ‰¹‚ÌêŠ‚ÅŒx‰ú‚·‚éŠÔi•bj
 
+    [Header("UŒ‚İ’è")]
+    [SerializeField] private Player player;                  // ƒvƒŒƒCƒ„[QÆ
+    [SerializeField] private float attackTriggerDistance = 0.5f;  // Attack‚É“ü‚é‹——£
+    [SerializeField] private float attackWindupTime = 0.5f;       // UŒ‚”­“®‚Ü‚Å‚Ì—­‚ßŠÔ
+    [SerializeField] private float attackKillDistance = 1.5f;     // ‚±‚Ì‹——£ˆÈ“à‚È‚çE‚¹‚é
+
     private NavMeshAgent agent;
     private float timer;
+    private float attackTimer = 0f;
 
     private void Awake()
     {
@@ -57,20 +65,40 @@ public class BossMove : MonoBehaviour
 
     private void Update()
     {
-        switch (currentState)
-        {
+        // AttackˆÈŠO‚Ìó‘Ô‚Ì‚Æ‚«AƒvƒŒƒCƒ„[‚ª‹ß‚¯‚ê‚ÎAttack‚Ö‘JˆÚ
+        if (currentState != AIState.Attack && player != null && !player.IsDead) {
+            float dist = Vector3.Distance(transform.position, player.transform.position);
+            if (dist <= attackTriggerDistance) {
+                EnterAttack();
+            }
+        }
+
+        switch (currentState) {
             case AIState.Patrol:
                 UpdatePatrol();
                 break;
-
             case AIState.Investigate:
                 UpdateInvestigate();
                 break;
-
             case AIState.Alert:
                 UpdateAlert();
                 break;
+            case AIState.Attack:
+                UpdateAttack();
+                break;
         }
+    }
+
+    // ============================================
+    // Šeó‘Ô‚Ö‚Ì‘JˆÚˆ—
+    // ============================================
+    private void EnterAttack() {
+        currentState = AIState.Attack;
+        attackTimer = 0f;
+
+        // ’â~
+        agent.isStopped = true;
+        agent.ResetPath();
     }
 
     // ============================================
@@ -109,6 +137,25 @@ public class BossMove : MonoBehaviour
             agent.speed = patrolSpeed;
             timer = 0f;
             SetNextRandomDestination();
+        }
+    }
+
+    private void UpdateAttack() {
+        if (player == null || player.IsDead) return;
+
+        attackTimer += Time.deltaTime;
+
+        // —­‚ßŠÔŒo‰ß‚Å”»’è
+        if (attackTimer >= attackWindupTime) {
+            float dist = Vector3.Distance(transform.position, player.transform.position);
+            if (dist <= attackKillDistance) {
+                player.Kill();
+            }
+
+            // UŒ‚I—¹AAlert‚ÖˆÚs‚µ‚ÄŒx‰úó‘Ô‚É
+            agent.isStopped = false;
+            currentState = AIState.Alert;
+            timer = 0f;
         }
     }
 

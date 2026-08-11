@@ -50,6 +50,9 @@ public class CameraLook : MonoBehaviour {
     private Vector3 currentBobOffset;
     private Vector3 prevAppliedBob = Vector3.zero;
 
+    // 内部倍率
+    private const float SENSITIVITY_SCALE = 0.1f;
+
     void Start() {
         // 設定画面で保存された感度を反映（存在しない場合はInspector値を維持）
         if (PlayerPrefs.HasKey(SettingsManager.KEY_SENSITIVITY)) {
@@ -74,7 +77,7 @@ public class CameraLook : MonoBehaviour {
         var mouse = Mouse.current;
         if (mouse == null) return;
 
-        Vector2 delta = mouse.delta.ReadValue() * mouseSensitivity;
+        Vector2 delta = mouse.delta.ReadValue() * mouseSensitivity * SENSITIVITY_SCALE;
 
         xRotation -= delta.y;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
