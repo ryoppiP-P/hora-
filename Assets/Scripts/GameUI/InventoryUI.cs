@@ -44,6 +44,7 @@ public class InventoryUI : MonoBehaviour {
 
     void Update() {
         if (pauseManager != null && pauseManager.IsPaused) return;
+        if (NoteReaderUI.IsOpen) return;
         var kb = Keyboard.current;
         if (kb == null) return;
 
@@ -125,6 +126,14 @@ public class InventoryUI : MonoBehaviour {
             pendingClear.TryUnlock(item);
             pendingClear = null;
             Toggle(false);
+            return;
+        }
+
+        // 通常モード：ノートは取り出さず、読み返すだけ
+        if (item is NoteItem note) {
+            Toggle(false);
+            var player = inventory.GetComponent<Player>();
+            if (player != null) NoteReaderUI.Show(note, player, null);
             return;
         }
 

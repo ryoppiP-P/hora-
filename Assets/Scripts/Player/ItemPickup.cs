@@ -19,6 +19,20 @@ public class ItemPickup : Interactable {
         var inv = player.GetComponent<Inventory>();
         if (inv == null) { Debug.LogWarning("Player に Inventory が無い"); return; }
 
+        if (inv.IsFull) {
+            Debug.Log("インベントリが満杯");
+            return;
+        }
+
+        // ノートは先に読ませてから閉じたタイミングでインベントリへ追加する
+        if (item is NoteItem note) {
+            NoteReaderUI.Show(note, player, () => {
+                if (inv.TryAdd(item)) Audio.Post("SE.Player.Item.Pickup", transform.position);
+                Destroy(gameObject);
+            });
+            return;
+        }
+
         if (inv.TryAdd(item)) {
             Audio.Post("SE.Player.Item.Pickup", transform.position);
             Destroy(gameObject);

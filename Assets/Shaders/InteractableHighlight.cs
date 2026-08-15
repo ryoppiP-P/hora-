@@ -6,6 +6,7 @@ using UnityEngine;
 public class InteractableHighlight : MonoBehaviour {
     [SerializeField] private Material outlineMaterial;      // Outline.shaderのマテリアル
     [SerializeField] private bool includeChildren = true;   // 子のMeshRendererも対象にするか
+    [SerializeField] private bool alwaysOn = false;          // 狙われていなくても常時ハイライトするか
 
     private List<Renderer> renderers = new List<Renderer>();
     // 各Rendererの元マテリアル配列を保持
@@ -26,7 +27,12 @@ public class InteractableHighlight : MonoBehaviour {
         }
     }
 
+    void Start() {
+        if (alwaysOn) SetHighlight(true);
+    }
+
     public void SetHighlight(bool on) {
+        if (alwaysOn) on = true;
         if (on == isHighlighted) return;
         isHighlighted = on;
 
