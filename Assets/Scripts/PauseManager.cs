@@ -35,6 +35,8 @@ public class PauseManager : MonoBehaviour {
 
         // インベントリ開いてる時はポーズ操作を無効化（Inventory優先）
         if (inventoryUI != null && inventoryUI.IsOpen) return;
+        // ノート閲覧中もポーズ操作を無効化
+        if (NoteReaderUI.IsOpen) return;
 
         if (kb.escapeKey.wasPressedThisFrame) {
             if (IsPaused) Close();
