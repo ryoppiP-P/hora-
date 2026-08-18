@@ -15,7 +15,10 @@ MonoBehaviour:
   bankType: 0
   entries:
   - key: Footstep.Walk
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 57b46cd1ddf24687a34d4a3ac7b9e48e, type: 3}
+    - {fileID: 8300000, guid: 06116276425d4a3ba7adcac56c3e855f, type: 3}
+    - {fileID: 8300000, guid: 5a908ddd6c214c80a82d9d234ffd2fde, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -50,7 +53,13 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Footstep.WalkUnderwater
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 9ed779b24eaf49fda9a7c51c29d289e6, type: 3}
+    - {fileID: 8300000, guid: c8a905b946dc407ba5995b52293c0152, type: 3}
+    - {fileID: 8300000, guid: dd47c5b6e25944ecb52b6012c7af5348, type: 3}
+    - {fileID: 8300000, guid: ddce12896c4e4fcd8873efcaf36e1ec1, type: 3}
+    - {fileID: 8300000, guid: 84a06a5fc2414fa7b940e9e57bd260fe, type: 3}
+    - {fileID: 8300000, guid: 914814f717834af1a68fa19f1cf2d0f1, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -155,7 +164,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Breath.Drowning
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: aed75501815d4800bd73c9ccd3fd28b6, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -260,14 +270,17 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Can.Impact
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 8056d7dd37414a8798a61d7f24a37944, type: 3}
+    - {fileID: 8300000, guid: 5e2d1ce3ed5f404984a6ddb5fcf85fcb, type: 3}
+    - {fileID: 8300000, guid: e9027ea63062433ba24d1367c1ac4423, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
     pitchRange: {x: 1, y: 1}
     loop: 0
     maxSimultaneous: 4
-    use3D: 0
+    use3D: 1
     maxDistance: 25
     navMeshSampleRadius: 3
     attenuationCurve:
@@ -470,14 +483,15 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Door.Hinged.LockedRattle
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: c55f83d1e5634abd8c506def8b3c9d3c, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
     pitchRange: {x: 1, y: 1}
     loop: 0
     maxSimultaneous: 4
-    use3D: 0
+    use3D: 1
     maxDistance: 25
     navMeshSampleRadius: 3
     attenuationCurve:
@@ -505,14 +519,15 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Console.UnlockError
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 9688515abe76411ea37a461081a68967, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
     pitchRange: {x: 1, y: 1}
     loop: 0
     maxSimultaneous: 4
-    use3D: 0
+    use3D: 1
     maxDistance: 25
     navMeshSampleRadius: 3
     attenuationCurve:
