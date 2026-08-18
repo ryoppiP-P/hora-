@@ -301,6 +301,7 @@ GameObject:
   - component: {fileID: 1679835970849965409}
   - component: {fileID: 7421657935006822871}
   - component: {fileID: 1468814518414580837}
+  - component: {fileID: 6278211105245194753}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -349,7 +350,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -410,6 +411,24 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6278211105245194753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066523230913944184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00cca7fc7a7b89248b6fd836fba852a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonHoverStyle
+  background: {fileID: 7421657935006822871}
+  label: {fileID: 6864372356712493408}
+  normalBg: {r: 1, g: 1, b: 1, a: 0}
+  normalText: {r: 1, g: 1, b: 1, a: 1}
+  hoverBg: {r: 1, g: 1, b: 1, a: 1}
+  hoverText: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &2068330778980296454
 GameObject:
   m_ObjectHideFlags: 0

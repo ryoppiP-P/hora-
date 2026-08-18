@@ -13,11 +13,14 @@ public class EndingCutscene : MonoBehaviour {
     public float turnDuration = 2.0f;
     public float pauseAfterTurn = 1.0f;
 
-    private GameManager gameManager;
+    [SerializeField]private GameManager gameManager;
 
     public IEnumerator Play() {
-        // 入力ロック
-        if (player != null) player.SetInputLocked(true);
+        // 入力ロック & 無敵化
+        if (player != null) {
+            player.SetInputLocked(true);
+            player.SetInvincible(true);
+        }
         if (cameraLook != null) cameraLook.cutsceneControlled = true;
 
         // Rigidbodyを止める（Playerが物理制御なら）
