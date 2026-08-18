@@ -78,6 +78,14 @@ public class Player : MonoBehaviour {
 
     private float capsuleBottomOffset;  // カプセルコライダーの底面のY座標（ワールド座標）
 
+    // 無敵
+    private bool isInvincible = false;
+    public bool IsInvincible => isInvincible;
+
+    public void SetInvincible(bool invincible) {
+        isInvincible = invincible;
+    }
+
     void Start() {
         rb = GetComponent<Rigidbody>();
         capsule = GetComponent<CapsuleCollider>();
@@ -256,7 +264,7 @@ public class Player : MonoBehaviour {
 
             drownTimer += Time.deltaTime;
 
-            if (drownTimer >= drownDuration) {
+            if (drownTimer >= drownDuration && !isInvincible) {
                 Die();
             }
         } else {
@@ -279,6 +287,7 @@ public class Player : MonoBehaviour {
     /// <summary>外部から殺す（敵の攻撃など）</summary>
     public void Kill() {
         if (isDead) return;
+        if (isInvincible) return;
         Die();
     }
 
