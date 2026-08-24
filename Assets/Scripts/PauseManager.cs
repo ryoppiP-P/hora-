@@ -44,6 +44,18 @@ public class PauseManager : MonoBehaviour {
         }
     }
 
+    // WebGLブラウザのfullscreenchangeイベント(WebGLFullscreenBridge経由)から呼ばれる。
+    // フルスクリーン中はEscapeキー自体がブラウザ側のフルスクリーン解除に
+    // 使われてしまい、Unity側にキー入力が届かないことがあるための代替経路
+    public void OnBrowserFullscreenExited() {
+        if (cameraLook != null && cameraLook.cutsceneControlled) return;
+        if (inventoryUI != null && inventoryUI.IsOpen) return;
+        if (NoteReaderUI.IsOpen) return;
+        if (IsPaused) return;
+
+        Open();
+    }
+
     public void Open() {
         if (settingsPanel == null) return;
         settingsPanel.SetActive(true);

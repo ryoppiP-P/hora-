@@ -83,8 +83,14 @@ public class CameraLook : MonoBehaviour {
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
-        if (playerBody != null)
+        // playerBodyはRigidbody(interpolation=Interpolate)付きのPlayer本体なので、
+        // Transform.Rotate()で直接回すと物理の補間システムと食い違って
+        // 横に回した時だけガクつく原因になっていた。Rigidbody.MoveRotation()で回す
+        if (playerRigidbody != null) {
+            playerRigidbody.MoveRotation(playerRigidbody.rotation * Quaternion.Euler(0f, delta.x, 0f));
+        } else if (playerBody != null) {
             playerBody.Rotate(Vector3.up * delta.x);
+        }
     }
 
     void HandleHeadBob() {

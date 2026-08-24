@@ -13,8 +13,13 @@ public class NoteReaderUI : MonoBehaviour {
     private static NoteReaderUI instance;
     private static GameObject canvasObject;
     private static CanvasGroup canvasGroup;
+    private static GameObject paperGO;
     private static RectTransform paperRect;
     private static TMP_Text noteText;
+    private static GameObject photoGO;
+    private static RectTransform photoRect;
+    private static Image photoImage;
+    private static RectTransform activeRect; // 今アニメーションさせている対象（紙 or 写真）
 
     private Player currentPlayer;
     private System.Action onClosed;
@@ -50,7 +55,7 @@ public class NoteReaderUI : MonoBehaviour {
         dimRT.offsetMax = Vector2.zero;
 
         // 紙のImage（Resources/paper.png）
-        var paperGO = new GameObject("Paper");
+        paperGO = new GameObject("Paper");
         paperGO.transform.SetParent(canvasObject.transform, false);
         var paperImage = paperGO.AddComponent<Image>();
         paperImage.raycastTarget = false;
@@ -84,6 +89,20 @@ public class NoteReaderUI : MonoBehaviour {
         textRT.offsetMin = Vector2.zero;
         textRT.offsetMax = Vector2.zero;
 
+        // 写真のImage（見つけたPhotoItem.photoを表示。紙の質感は使わず写真そのものを見せる）
+        photoGO = new GameObject("Photo");
+        photoGO.transform.SetParent(canvasObject.transform, false);
+        photoImage = photoGO.AddComponent<Image>();
+        photoImage.raycastTarget = false;
+        photoImage.preserveAspect = true;
+
+        photoRect = photoImage.rectTransform;
+        photoRect.anchorMin = new Vector2(0.5f, 0.5f);
+        photoRect.anchorMax = new Vector2(0.5f, 0.5f);
+        photoRect.pivot = new Vector2(0.5f, 0.5f);
+        photoRect.anchoredPosition = Vector2.zero;
+        photoGO.SetActive(false);
+
         canvasObject.SetActive(true);
     }
 
@@ -93,12 +112,36 @@ public class NoteReaderUI : MonoBehaviour {
         if (canvasObject == null) Init();
 
         noteText.text = note.noteText;
+        paperGO.SetActive(true);
+        photoGO.SetActive(false);
+        activeRect = paperRect;
 
+        BeginShow(player, onClosed);
+    }
+
+    /// <summary>写真を画面いっぱいに表示する。閉じられたらonClosedが呼ばれる</summary>
+    public static void Show(PhotoItem photo, Player player, System.Action onClosed) {
+        if (photo == null || photo.photo == null || player == null) return;
+        if (canvasObject == null) Init();
+
+        photoImage.sprite = photo.photo;
+        float aspect = photo.photo.rect.width / photo.photo.rect.height;
+        const float targetHeight = 700f;
+        photoRect.sizeDelta = new Vector2(targetHeight * aspect, targetHeight);
+
+        paperGO.SetActive(false);
+        photoGO.SetActive(true);
+        activeRect = photoRect;
+
+        BeginShow(player, onClosed);
+    }
+
+    static void BeginShow(Player player, System.Action onClosed) {
         instance.currentPlayer = player;
         instance.onClosed = onClosed;
         instance.animT = 0f;
         instance.inputGuardTimer = InputGuardDuration;
-        paperRect.localScale = Vector3.one * 0.85f;
+        activeRect.localScale = Vector3.one * 0.85f;
         canvasGroup.alpha = 0f;
 
         Time.timeScale = 0f;
@@ -117,7 +160,7 @@ public class NoteReaderUI : MonoBehaviour {
         float eased = 1f - (1f - animT) * (1f - animT);
         canvasGroup.alpha = eased;
         float scale = Mathf.Lerp(0.85f, 1f, eased);
-        paperRect.localScale = new Vector3(scale, scale, 1f);
+        activeRect.localScale = new Vector3(scale, scale, 1f);
 
         if (inputGuardTimer > 0f) {
             inputGuardTimer -= Time.unscaledDeltaTime;

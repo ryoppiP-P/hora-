@@ -9,6 +9,10 @@ public class IntroCutscene : MonoBehaviour {
     public Image blinkOverlay;       // 画面全体を覆う黒Image（まばたき用）
     public CanvasGroup photoUI;      // 家族写真UI（CanvasGroupを付ける）
 
+    [Header("Photo Item")]
+    public PhotoItem familyPhoto;       // 目覚めた瞬間にインベントリへ入れる写真アイテム
+    public GameObject photoFrameObject; // 写真UI表示後に消す床の写真立て
+
     [Header("Camera Angles")]
     public float ceilingPitch = -70f;   // 天井を見上げる
     public float photoPitch = 55f;   // 右斜め下
@@ -60,7 +64,18 @@ public class IntroCutscene : MonoBehaviour {
         // ③ 家族写真の方向を向く（滑らかに）
         yield return RotateCamera(ceilingPitch, 0f, photoPitch, photoYaw, lookPhotoTime);
 
-        // ④ 写真UIをフェード表示
+        yield return new WaitForSeconds(0.9f);
+
+        // ④ 写真を拾う（インベントリへ追加）。見た目はこの後モデルをクローズアップ撮影するので、
+        // 写真立て自体はまだ消さない
+        if (player != null && familyPhoto != null) {
+            var inv = player.GetComponent<Inventory>();
+            if (inv != null) inv.TryAdd(familyPhoto);
+        }
+
+        // ⑤ 写真立て（額縁ごと）を焼き込み済みの静止画で全画面フェード表示
+        // ※ライブカメラ+ライトでのクローズアップ撮影はやめた（プレイヤーのカメラにライトが映り込んでしまうため）。
+        //   代わりに事前にレンダリングしたAssets/Resources/FamilyPhotoFramed.pngをそのまま表示する
         if (photoUI != null) {
             photoUI.gameObject.SetActive(true);
             yield return FadeCanvas(photoUI, 0f, 1f, 0.5f);
@@ -69,11 +84,13 @@ public class IntroCutscene : MonoBehaviour {
             photoUI.gameObject.SetActive(false);
         }
 
-        // ⑤ 床を見渡す（浸水を確認）
+        if (photoFrameObject != null) Destroy(photoFrameObject);
+
+        // ⑥ 床を見渡す（浸水を確認）
         yield return RotateCamera(photoPitch, photoYaw, floorPitch, 0f, lookFloorTime);
         yield return new WaitForSeconds(1.2f); // 浸水の絶望を噛みしめる間
 
-        // ⑥ 立ち上がる（正面へ）
+        // ⑦ 立ち上がる（正面へ）
         yield return RotateCamera(floorPitch, 0f, standPitch, 0f, standUpTime);
 
         // 操作復帰
@@ -118,4 +135,5 @@ public class IntroCutscene : MonoBehaviour {
         c.a = a;
         blinkOverlay.color = c;
     }
+
 }

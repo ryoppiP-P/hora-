@@ -137,6 +137,14 @@ public class InventoryUI : MonoBehaviour {
             return;
         }
 
+        // 通常モード：写真も取り出さず、読み返すだけ
+        if (item is PhotoItem photo) {
+            Toggle(false);
+            var player = inventory.GetComponent<Player>();
+            if (player != null) NoteReaderUI.Show(photo, player, null);
+            return;
+        }
+
         // 通常モード：既存の取り出し処理
         var taken = inventory.TakeAt(index);
         if (taken == null || taken.worldPrefab == null) return;
