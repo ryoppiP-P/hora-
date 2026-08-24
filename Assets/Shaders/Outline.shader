@@ -14,6 +14,8 @@ Shader "Custom/InteractableOutline"
         _FlickerAmount ("Flicker Amount", Range(0, 1)) = 0.15
 
         _InnerGlow ("Inner Glow (全体発光)", Range(0, 2)) = 0.3
+
+        _MainTex ("Base Texture (アルファ形状に合わせる用)", 2D) = "white" {}
     }
 
     SubShader
@@ -44,6 +46,7 @@ Shader "Custom/InteractableOutline"
             {
                 float4 positionOS : POSITION;
                 float3 normalOS   : NORMAL;
+                float2 uv         : TEXCOORD0;
             };
 
             struct Varyings
@@ -51,6 +54,7 @@ Shader "Custom/InteractableOutline"
                 float4 positionCS : SV_POSITION;
                 float3 normalWS   : TEXCOORD0;
                 float3 positionWS : TEXCOORD1;
+                float2 uv         : TEXCOORD2;
             };
 
             CBUFFER_START(UnityPerMaterial)
@@ -63,7 +67,11 @@ Shader "Custom/InteractableOutline"
                 float  _FlickerSpeed;
                 float  _FlickerAmount;
                 float  _InnerGlow;
+                float4 _MainTex_ST;
             CBUFFER_END
+
+            TEXTURE2D(_MainTex);
+            SAMPLER(sampler_MainTex);
 
             // 疑似ランダム（ちらつき用）
             float hash(float n) { return frac(sin(n) * 43758.5453); }
@@ -74,6 +82,7 @@ Shader "Custom/InteractableOutline"
                 OUT.positionWS = TransformObjectToWorld(IN.positionOS.xyz);
                 OUT.positionCS = TransformWorldToHClip(OUT.positionWS);
                 OUT.normalWS   = TransformObjectToWorldNormal(IN.normalOS);
+                OUT.uv = TRANSFORM_TEX(IN.uv, _MainTex);
                 return OUT;
             }
 
@@ -101,7 +110,9 @@ Shader "Custom/InteractableOutline"
 
                 // 最終カラー
                 half3 col = _FresnelColor.rgb * _FresnelIntensity * glow * pulse * flicker;
-                half alpha = saturate(glow) * _FresnelColor.a;
+                // 元のテクスチャの透明部分（紙の破れた縁の外側など）にはグローを出さない
+                half texAlpha = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv).a;
+                half alpha = saturate(glow) * _FresnelColor.a * texAlpha;
 
                 return half4(col, alpha);
             }

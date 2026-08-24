@@ -24,9 +24,16 @@ public class ItemPickup : Interactable {
             return;
         }
 
-        // ノートは先に読ませてから閉じたタイミングでインベントリへ追加する
+        // ノート・写真は先に読ませてから閉じたタイミングでインベントリへ追加する
         if (item is NoteItem note) {
             NoteReaderUI.Show(note, player, () => {
+                if (inv.TryAdd(item)) Audio.Post("SE.Player.Item.Pickup", transform.position);
+                Destroy(gameObject);
+            });
+            return;
+        }
+        if (item is PhotoItem photo) {
+            NoteReaderUI.Show(photo, player, () => {
                 if (inv.TryAdd(item)) Audio.Post("SE.Player.Item.Pickup", transform.position);
                 Destroy(gameObject);
             });

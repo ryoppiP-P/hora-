@@ -3,7 +3,12 @@ guid: 17e663899a686ac4bb57e6e8e1b622bb
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: KINZOKU
+    second: {fileID: 2100000, guid: 0f3c0c03da739bb4cafdfc27134405c5, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

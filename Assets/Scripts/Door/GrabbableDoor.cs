@@ -26,6 +26,7 @@ public class GrabbableDoor : Interactable {
 
     private Rigidbody rb;
     private BoxCollider box;
+    private Collider playerCollider; // 開いている間だけ物理的な押し出しを止める相手
     private bool isGrabbed;
     private float currentAngle;   // 閉じた状態からの現在角度
     private float targetAngle;    // マウス操作で決まる目標角度
@@ -51,6 +52,8 @@ public class GrabbableDoor : Interactable {
         rb.isKinematic = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+
+        if (interactor != null) playerCollider = interactor.GetComponent<Collider>();
     }
 
     void Start() {
@@ -91,6 +94,9 @@ public class GrabbableDoor : Interactable {
                 IsAnyGrabbing = true;
                 targetAngle = currentAngle;
                 Audio.Post("SE.Player.Door.Hinged.Open", transform.position);
+                // 開いている最中にプレイヤー自身の当たり判定へ食い込んで
+                // カメラががくつくのを防ぐため、掴んでいる間だけ衝突を無視する
+                if (playerCollider != null) Physics.IgnoreCollision(box, playerCollider, true);
             }
         }
         if (mouse.leftButton.wasReleasedThisFrame) Release();
@@ -177,6 +183,7 @@ public class GrabbableDoor : Interactable {
         if (isGrabbed) {
             isGrabbed = false;
             IsAnyGrabbing = false;
+            if (playerCollider != null) Physics.IgnoreCollision(box, playerCollider, false);
         }
     }
 
@@ -184,6 +191,7 @@ public class GrabbableDoor : Interactable {
         if (isGrabbed) {
             isGrabbed = false;
             IsAnyGrabbing = false;
+            if (playerCollider != null) Physics.IgnoreCollision(box, playerCollider, false);
         }
     }
 }
