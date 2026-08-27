@@ -28,7 +28,7 @@ public class SettingsManager : MonoBehaviour {
 
     // デフォルト値
     public const float DEFAULT_SENSITIVITY = 1.0f;
-    public const float DEFAULT_BRIGHTNESS = 0.0f;
+    public const float DEFAULT_BRIGHTNESS = -2.0f;
 
     private ColorAdjustments colorAdjustments;
 
