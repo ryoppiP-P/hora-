@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 4422947469119022617}
   - component: {fileID: 2362226701576220467}
   - component: {fileID: 6091504502627288628}
-  - component: {fileID: -40308058032731637}
   - component: {fileID: 8949652408765575850}
   - component: {fileID: 7610893956978988685}
   - component: {fileID: -507035812374709311}
@@ -34,8 +33,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -131.86356, y: -0.546, z: -8.331}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -72,7 +71,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 0841fd779a7bce84591fe750b4d66126, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -131,22 +130,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   holdDuration: 0
   item: {fileID: 11400000, guid: 413163368196bfb448f59d8cde952fee, type: 2}
---- !u!114 &-40308058032731637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2852048065335112797}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b45eedb9a88d8847adc82f9905ab1ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Throwable
-  displayName: "\u7A7A\u304D\u7F36"
-  OnLanded:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!54 &8949652408765575850
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -203,5 +186,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableHighlight
   outlineMaterial: {fileID: 2100000, guid: 96224fd5bfa0f7e4d926e19d04cce526, type: 2}
+  dimOutlineMaterial: {fileID: 2100000, guid: ffdb1c5fad650f249b7d1631171ff894, type: 2}
   includeChildren: 1
   alwaysOn: 1
