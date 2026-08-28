@@ -1805,6 +1805,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2332755772802424673, guid: 24d36a3201fcc6e4a958af10257e1df1, type: 3}
+      propertyPath: m_Name
+      value: VolumeRow
+      objectReference: {fileID: 0}
     - target: {fileID: 3101867545128991655, guid: 24d36a3201fcc6e4a958af10257e1df1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -1897,6 +1901,14 @@ PrefabInstance:
       propertyPath: globalVolume
       value: 
       objectReference: {fileID: 2276806273491311100}
+    - target: {fileID: 7434221751984207409, guid: 24d36a3201fcc6e4a958af10257e1df1, type: 3}
+      propertyPath: volumeSlider
+      value: 
+      objectReference: {fileID: 3155168102428312160}
+    - target: {fileID: 7434221751984207409, guid: 24d36a3201fcc6e4a958af10257e1df1, type: 3}
+      propertyPath: volumeValueText
+      value: 
+      objectReference: {fileID: 3155168102428312159}
     - target: {fileID: 8578788470593964172, guid: 24d36a3201fcc6e4a958af10257e1df1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -1906,6 +1918,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 24d36a3201fcc6e4a958af10257e1df1, type: 3}
+--- !u!114 &3155168102428312159 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2800539692510954664, guid: 24d36a3201fcc6e4a958af10257e1df1, type: 3}
+  m_PrefabInstance: {fileID: 3155168102428312158}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &3155168102428312160 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6620618684516628102, guid: 24d36a3201fcc6e4a958af10257e1df1, type: 3}
+  m_PrefabInstance: {fileID: 3155168102428312158}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

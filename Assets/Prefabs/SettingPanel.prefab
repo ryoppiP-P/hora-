@@ -589,7 +589,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8713875386913282842}
   m_Layer: 5
-  m_Name: BrightnessRow
+  m_Name: VolumeRow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1534,7 +1534,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u8F1D\u5EA6"
+  m_text: "\u97F3\u91CF"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1a7a4a9e2334a3945bbff10baa03f051, type: 2}
   m_sharedMaterial: {fileID: 5334419489853836369, guid: 1a7a4a9e2334a3945bbff10baa03f051, type: 2}
@@ -1805,11 +1805,10 @@ MonoBehaviour:
   sensitivityValueText: {fileID: 2925149211594436527}
   minSensitivity: 0.1
   maxSensitivity: 5
-  brightnessSlider: {fileID: 6620618684516628102}
-  brightnessValueText: {fileID: 2800539692510954664}
-  globalVolume: {fileID: 0}
-  minBrightness: -2
-  maxBrightness: 2
+  volumeSlider: {fileID: 6620618684516628102}
+  volumeValueText: {fileID: 2800539692510954664}
+  minVolume: 0
+  maxVolume: 1
   cameraLook: {fileID: 0}
 --- !u!1 &8442686151081338269
 GameObject:
