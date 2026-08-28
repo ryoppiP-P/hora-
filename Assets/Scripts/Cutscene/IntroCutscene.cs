@@ -37,6 +37,8 @@ public class IntroCutscene : MonoBehaviour {
         if (player != null) player.SetInputLocked(true);
         if (cameraLook != null) cameraLook.cutsceneControlled = true;
 
+        yield return OpeningMovie.PlayIfNeeded();
+
         // ‰Šúp¨F“Vˆä‚ğŒ©‚Ä‚¢‚é
         cameraLook.SetRotation(ceilingPitch, 0f);
         if (photoUI != null) { photoUI.alpha = 0f; photoUI.gameObject.SetActive(false); }

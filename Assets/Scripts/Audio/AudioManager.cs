@@ -95,6 +95,19 @@ public sealed class AudioManager : MonoBehaviour
         LoadAudioMixer();
         CreateSePool();
         CreateBgmSources();
+        ApplySavedVolume();
+    }
+
+    /// <summary>
+    /// SettingsManagerで保存された音量をミキサーへ反映する。
+    /// 設定画面を一度も開かなくても、前回保存された値が最初から効くようにするため
+    /// （PlayerPrefsが未保存ならデフォルト値=最大音量になる）。
+    /// </summary>
+    private void ApplySavedVolume()
+    {
+        float volume = PlayerPrefs.GetFloat(SettingsManager.KEY_VOLUME, SettingsManager.DEFAULT_VOLUME);
+        SetMixerVolume("BGMVolume", volume);
+        SetMixerVolume("SEVolume", volume);
     }
 
     private void Update()

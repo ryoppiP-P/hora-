@@ -51,6 +51,7 @@ public class TitleManager : MonoBehaviour {
 
     private void OnStartClicked() {
         Audio.Post("SE.UI.Confirm");
+        OpeningMovie.ShouldPlay = true; // タイトル→ゲームの時だけオープニング動画を流す
         FadeManager.FadeOut(gameSceneName, fadeDuration);
     }
 

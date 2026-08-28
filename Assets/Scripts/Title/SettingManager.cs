@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using TMPro;
 
@@ -11,12 +9,11 @@ public class SettingsManager : MonoBehaviour {
     [SerializeField] private float minSensitivity = 0.1f;
     [SerializeField] private float maxSensitivity = 5.0f;
 
-    [Header("Brightness")]
-    [SerializeField] private Slider brightnessSlider;
-    [SerializeField] private TMP_Text brightnessValueText;
-    [SerializeField] private Volume globalVolume;              // シーン内のGlobal Volume
-    [SerializeField] private float minBrightness = -2.0f;      // Post Exposureの下限
-    [SerializeField] private float maxBrightness = 2.0f;
+    [Header("Volume")]
+    [SerializeField] private Slider volumeSlider;
+    [SerializeField] private TMP_Text volumeValueText;
+    [SerializeField] private float minVolume = 0.0f;
+    [SerializeField] private float maxVolume = 1.0f;
 
     [Header("Runtime Apply")]
     [Tooltip("同シーン内のCameraLookに感度変更を即反映するために")]
@@ -24,23 +21,16 @@ public class SettingsManager : MonoBehaviour {
 
     // PlayerPrefsキー
     public const string KEY_SENSITIVITY = "MouseSensitivity";
-    public const string KEY_BRIGHTNESS = "Brightness";
+    public const string KEY_VOLUME = "Volume";
 
     // デフォルト値
     public const float DEFAULT_SENSITIVITY = 1.0f;
-    public const float DEFAULT_BRIGHTNESS = -2.0f;
-
-    private ColorAdjustments colorAdjustments;
+    public const float DEFAULT_VOLUME = 1.0f;
 
     private void Start() {
-        // Post-processing の ColorAdjustments を取得
-        if (globalVolume != null && globalVolume.profile != null) {
-            globalVolume.profile.TryGet(out colorAdjustments);
-        }
-
         // 保存値を読み込みつつ、UIにも反映
         float sens = PlayerPrefs.GetFloat(KEY_SENSITIVITY, DEFAULT_SENSITIVITY);
-        float bright = PlayerPrefs.GetFloat(KEY_BRIGHTNESS, DEFAULT_BRIGHTNESS);
+        float vol = PlayerPrefs.GetFloat(KEY_VOLUME, DEFAULT_VOLUME);
 
         if (sensitivitySlider != null) {
             sensitivitySlider.minValue = minSensitivity;
@@ -49,16 +39,16 @@ public class SettingsManager : MonoBehaviour {
             sensitivitySlider.onValueChanged.AddListener(OnSensitivityChanged);
         }
 
-        if (brightnessSlider != null) {
-            brightnessSlider.minValue = minBrightness;
-            brightnessSlider.maxValue = maxBrightness;
-            brightnessSlider.value = bright;
-            brightnessSlider.onValueChanged.AddListener(OnBrightnessChanged);
+        if (volumeSlider != null) {
+            volumeSlider.minValue = minVolume;
+            volumeSlider.maxValue = maxVolume;
+            volumeSlider.value = vol;
+            volumeSlider.onValueChanged.AddListener(OnVolumeChanged);
         }
 
         // 初期値を即反映
         OnSensitivityChanged(sens);
-        OnBrightnessChanged(bright);
+        OnVolumeChanged(vol);
     }
 
     private void OnSensitivityChanged(float value) {
@@ -71,13 +61,14 @@ public class SettingsManager : MonoBehaviour {
             cameraLook.ApplySensitivity(value);
     }
 
-    private void OnBrightnessChanged(float value) {
-        PlayerPrefs.SetFloat(KEY_BRIGHTNESS, value);
-        if (brightnessValueText != null)
-            brightnessValueText.text = value.ToString("F2");
+    private void OnVolumeChanged(float value) {
+        PlayerPrefs.SetFloat(KEY_VOLUME, value);
+        if (volumeValueText != null)
+            volumeValueText.text = value.ToString("F2");
 
-        if (colorAdjustments != null)
-            colorAdjustments.postExposure.value = value;
+        AudioManager audioManager = AudioManager.GetOrCreate();
+        audioManager.SetMixerVolume("BGMVolume", value);
+        audioManager.SetMixerVolume("SEVolume", value);
     }
 
     private void OnDisable() {
