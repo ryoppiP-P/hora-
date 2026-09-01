@@ -94,7 +94,10 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Footstep.Run
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 57b46cd1ddf24687a34d4a3ac7b9e48e, type: 3}
+    - {fileID: 8300000, guid: 06116276425d4a3ba7adcac56c3e855f, type: 3}
+    - {fileID: 8300000, guid: 5a908ddd6c214c80a82d9d234ffd2fde, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -129,7 +132,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Breath.OutOfStamina
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 1e241fd1b88025842a44d9855b16476b, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -200,7 +204,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Item.Pickup
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: e376667875829ca499033d205897eea4, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -235,7 +240,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Can.Throw
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 0b19649ae36efa74fbf3240e3d6663e3, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -308,7 +314,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Door.Hinged.Open
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 36e67bb5915de074b915ac4e11dbbeb7, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -343,7 +350,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Door.AutomaticLarge.Open
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 6bc5f86bc41309a439efb064e7f53315, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -413,7 +421,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: EscapePod.Unlock
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 680b3a4bddb299e4b8574d731ad71512, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -448,7 +457,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Door.Key.Unlock
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 30a0ab738d2aa334db703fb7426212be, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
