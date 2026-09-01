@@ -235,20 +235,31 @@ public class Player : MonoBehaviour {
         bool underwater = waterEffect != null && waterEffect.IsInWater;
         string key;
         float interval;
+        float soundLoudness;
         if (underwater) {
             key = "SE.Player.Footstep.WalkUnderwater";
             interval = underwaterStepInterval;
+            soundLoudness = 0.35f;
         } else if (state == MoveState.Run) {
             key = "SE.Player.Footstep.Run";
             interval = runStepInterval;
+            soundLoudness = 1.0f;
         } else {
             key = "SE.Player.Footstep.Walk";
             interval = walkStepInterval;
+            soundLoudness = 0.5f;
         }
 
         footstepTimer -= Time.deltaTime;
         if (footstepTimer <= 0f) {
             Audio.Post(key, transform);
+            // ボスAIに足音を知らせる（ボス側のSoundPropagation.TryHearが判定に使う）
+            SoundSystem.Emit(new SoundInfo {
+                position = transform.position,
+                loudness = soundLoudness,
+                type = SoundType.Footstep,
+                source = gameObject
+            });
             footstepTimer = interval;
         }
     }

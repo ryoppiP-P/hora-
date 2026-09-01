@@ -94,6 +94,13 @@ public class GrabbableDoor : Interactable {
                 IsAnyGrabbing = true;
                 targetAngle = currentAngle;
                 Audio.Post("SE.Player.Door.Hinged.Open", transform.position);
+                // ボスAIにドアの開放音を知らせる
+                SoundSystem.Emit(new SoundInfo {
+                    position = transform.position,
+                    loudness = 0.7f,
+                    type = SoundType.Gimmick,
+                    source = gameObject
+                });
                 // 開いている最中にプレイヤー自身の当たり判定へ食い込んで
                 // カメラががくつくのを防ぐため、掴んでいる間だけ衝突を無視する
                 if (playerCollider != null) Physics.IgnoreCollision(box, playerCollider, true);

@@ -84,6 +84,13 @@ public class AutoDoor : MonoBehaviour {
         isOpen = true;
         isMoving = true;
         Audio.Post("SE.Player.Door.AutomaticLarge.Open", transform.position);
+        // ボスAIにドアの開放音を知らせる
+        SoundSystem.Emit(new SoundInfo {
+            position = transform.position,
+            loudness = 0.7f,
+            type = SoundType.Gimmick,
+            source = gameObject
+        });
 
         if (propagate && linkedDoors != null) {
             foreach (var d in linkedDoors) {
