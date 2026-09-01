@@ -25,7 +25,7 @@ public class Player : MonoBehaviour {
 
     [Header("Stamina")]
     [SerializeField] private float maxStamina = 6f;       // ‘–s‰Â”\•b”
-    [SerializeField] private float recoverDuration = 12f; // 0¨–ƒ^ƒ“‚Ü‚Å‚Ì•b”
+    [SerializeField] private float recoverDuration = 10f; // 0¨–ƒ^ƒ“‚Ü‚Å‚Ì•b”
     [SerializeField] private float currentStamina;
 
     [Header("Ground Check")]

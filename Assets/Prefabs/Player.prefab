@@ -126,7 +126,7 @@ MonoBehaviour:
   crouchLerpSpeed: 10
   cameraTransform: {fileID: 7369820287218973452}
   maxStamina: 10
-  recoverDuration: 12
+  recoverDuration: 10
   currentStamina: 0
   groundCheck: {fileID: 5096534849682966127}
   groundDistance: 0.2
