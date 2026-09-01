@@ -40,6 +40,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7369820287218973452}
+  - {fileID: 5319360712957884713}
   - {fileID: 5096534849682966127}
   - {fileID: 4248579380562290336}
   m_Father: {fileID: 0}
@@ -132,12 +133,16 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  walkStepInterval: 0.5
+  runStepInterval: 0.35
+  underwaterStepInterval: 0.6
   interactor: {fileID: 8081018586458762998}
   holder: {fileID: 5962441090643677807}
   waterEffect: {fileID: 592229899465233461}
   drownThreshold: 0.95
   drownDuration: 3
   inventoryUI: {fileID: 0}
+  pauseManager: {fileID: 0}
 --- !u!114 &8081018586458762998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -514,11 +519,11 @@ Transform:
   m_GameObject: {fileID: 3093665885530065152}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.25061, y: -0.52, z: 0.25000003}
+  m_LocalPosition: {x: 0, y: 0, z: 0.54}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7369820287218973452}
+  m_Father: {fileID: 3351686953785488720}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!108 &9039699315244956549
 Light:
@@ -628,6 +633,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Flashlight
   flashlight: {fileID: 9039699315244956549}
   followTarget: {fileID: 7369820287218973452}
+  positionOffset: {x: 0, y: 0, z: 0}
+  useLocalOffset: 1
+  positionLerpSpeed: 5
+  rotationLerpSpeed: 2.5
+  useSmoothDamp: 1
+  positionSmoothTime: 0.15
+  rotationSmoothTime: 0.23
+  maxAngularSpeed: 480
 --- !u!1 &4478562110184932910
 GameObject:
   m_ObjectHideFlags: 0
@@ -663,7 +676,6 @@ Transform:
   m_Children:
   - {fileID: 8450442973168447608}
   - {fileID: 321654375015267189}
-  - {fileID: 5319360712957884713}
   m_Father: {fileID: 3351686953785488720}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1216577002649136082
@@ -794,6 +806,8 @@ MonoBehaviour:
   runBobAmpY: 0.07
   runBobAmpX: 0.04
   inventoryUI: {fileID: 0}
+  pauseManager: {fileID: 0}
+  _cutsceneControlled: 0
 --- !u!1 &6546096239039809825
 GameObject:
   m_ObjectHideFlags: 0
