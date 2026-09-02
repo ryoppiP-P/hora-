@@ -14,7 +14,7 @@ public class GrabbableDoor : Interactable {
     [SerializeField] private float referenceAngularSpeed = 150f;      // 度/秒。この速さで最大音量になる
     [SerializeField] private float pitchReferenceAngularSpeed = 60f;  // 度/秒。この速さでクリップが等速(ピッチ1.0)で再生される
     [SerializeField] private float minCreakPitch = 0.2f;              // 遅い時のピッチ下限（低すぎるとノイズになるため）
-    [SerializeField] private float maxCreakPitch = 2.5f;              // 速い時のピッチ上限
+    [SerializeField] private float maxCreakPitch = 1.0f;              // 速い時のピッチ上限
     [SerializeField] private float minCreakVolume = 0.35f;
     [SerializeField] private float maxCreakVolume = 1.0f;
     [SerializeField] private float minCreakLoudness = 0.2f; // ボスへ知らせる音の大きさ(0～1)の下限
