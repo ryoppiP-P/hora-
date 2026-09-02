@@ -320,7 +320,7 @@ MonoBehaviour:
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
     pitchRange: {x: 1, y: 1}
-    loop: 0
+    loop: 1
     maxSimultaneous: 4
     use3D: 0
     maxDistance: 25
