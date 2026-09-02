@@ -38,6 +38,7 @@ public sealed class AudioManager : MonoBehaviour
     private const int InitialSePoolSize = 16;
     private const int MaximumSePoolSize = 32;
     private const float DistanceUpdateInterval = 0.15f;
+    private const float ProgressSyncTolerance = 0.12f; // SetProgressで再生位置を補正するズレの許容量(秒)
 
     private static AudioManager instance;
 
@@ -142,7 +143,10 @@ public sealed class AudioManager : MonoBehaviour
         }
 
         if (CountPlaying(data) >= data.MaxSimultaneous)
+        {
+            Debug.LogWarning($"[Audio] 同時再生上限に達しているため再生をスキップしました: {key} (maxSimultaneous={data.MaxSimultaneous})");
             return null;
+        }
 
         AudioVoice voice = GetAvailableVoice();
         if (voice == null)
@@ -264,6 +268,58 @@ public sealed class AudioManager : MonoBehaviour
         voice.FadeDuration = fadeTime;
         voice.FadeElapsed = 0f;
         voice.IsFadingOut = true;
+    }
+
+    /// <summary>
+    /// 指定した再生IDのSEの音量を0～1で直接設定する。
+    /// 3D音の場合、次回の距離減衰更新でこの値を基準に再計算される。
+    /// </summary>
+    internal void SetVolume(int playbackId, float normalized01)
+    {
+        AudioVoice voice = FindVoice(playbackId);
+        if (voice == null)
+            return;
+
+        float clamped = Mathf.Clamp01(normalized01);
+        voice.BaseVolume = clamped;
+        voice.Source.volume = clamped;
+    }
+
+    /// <summary>
+    /// 指定した再生IDのSEの再生速度(ピッチ)を設定する。
+    /// ドアの開閉速度など、外部の動きに合わせてクリップの進む速さを変えたい場合に使う。
+    /// </summary>
+    internal void SetPitch(int playbackId, float pitch)
+    {
+        AudioVoice voice = FindVoice(playbackId);
+        if (voice == null)
+            return;
+
+        voice.Source.pitch = pitch;
+    }
+
+    /// <summary>
+    /// 指定した再生IDのSEを、クリップ内の位置(0～1)へ直接スクラブする。
+    /// ドアの開き具合など、時間経過ではなく外部パラメータにクリップ位置を連動させたい場合に使う。
+    /// </summary>
+    internal void SetProgress(int playbackId, float normalized01)
+    {
+        AudioVoice voice = FindVoice(playbackId);
+        if (voice == null || voice.Source.clip == null)
+            return;
+
+        float clipLength = voice.Source.clip.length;
+        float time = Mathf.Clamp(Mathf.Clamp01(normalized01) * clipLength, 0f, clipLength - 0.01f);
+
+        if (!voice.Source.isPlaying)
+            voice.Source.Play();
+
+        // 毎フレーム無条件にtimeを書き換えると、再生ヘッドが常に巻き戻されて
+        // 同じ数msのスライスを繰り返すだけになり、ほとんど音が出なくなる。
+        // 実際の再生位置が目標から大きくずれた時だけ補正し、
+        // それ以外は音声エンジンに普通に再生させる。
+        if (Mathf.Abs(voice.Source.time - time) > ProgressSyncTolerance)
+            voice.Source.time = time;
     }
 
     /// <summary>

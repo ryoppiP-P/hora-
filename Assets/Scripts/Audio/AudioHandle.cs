@@ -32,4 +32,32 @@ public sealed class AudioHandle
         if (manager != null)
             manager.Stop(playbackId, fadeTime);
     }
+
+    /// <summary>
+    /// 音量を0～1で直接設定する。
+    /// </summary>
+    public void SetVolume(float normalized01)
+    {
+        if (manager != null)
+            manager.SetVolume(playbackId, normalized01);
+    }
+
+    /// <summary>
+    /// 再生速度(ピッチ)を設定する。
+    /// </summary>
+    public void SetPitch(float pitch)
+    {
+        if (manager != null)
+            manager.SetPitch(playbackId, pitch);
+    }
+
+    /// <summary>
+    /// クリップ内の再生位置を0～1で直接指定する（スクラブ）。
+    /// ドアの開き具合など、経過時間ではなく外部パラメータにクリップ位置を連動させたい時に使う。
+    /// </summary>
+    public void SetProgress(float normalized01)
+    {
+        if (manager != null)
+            manager.SetProgress(playbackId, normalized01);
+    }
 }

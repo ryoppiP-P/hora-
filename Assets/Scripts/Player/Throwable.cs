@@ -3,9 +3,9 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class Throwable : MonoBehaviour {
-    [SerializeField] private string displayName = "‹ó‚«ŠÊ";
+    [SerializeField] private string displayName = "ï¿½ó‚«Šï¿½";
 
-    // “Š‚°‚½Œã‚É’n–Ê‚É’…’n‚µ‚½‚ÌƒCƒxƒ“ƒg
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É’nï¿½Ê‚É’ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌƒCï¿½xï¿½ï¿½ï¿½g
     [System.Serializable] public class LandEvent : UnityEvent<Throwable, Collision> { }
     public LandEvent OnLanded;
 
@@ -43,6 +43,13 @@ public class Throwable : MonoBehaviour {
     void OnCollisionEnter(Collision collision) {
         if (isHeld) return;
         Audio.Post("SE.Player.Can.Impact", transform.position);
+        // ãƒœã‚¹AIã«ç€å¼¾éŸ³ã‚’çŸ¥ã‚‰ã›ã‚‹ï¼ˆãŠã³ãå¯„ã›/ãã‚‰ã™ã‚®ãƒŸãƒƒã‚¯ã¨ã—ã¦æ©Ÿèƒ½ã•ã›ã‚‹ãŸã‚ï¼‰
+        SoundSystem.Emit(new SoundInfo {
+            position = transform.position,
+            loudness = 1.0f,
+            type = SoundType.Impact,
+            source = gameObject
+        });
         OnLanded?.Invoke(this, collision);
     }
 }

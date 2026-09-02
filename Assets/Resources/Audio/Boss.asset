@@ -15,7 +15,10 @@ MonoBehaviour:
   bankType: 1
   entries:
   - key: Footstep.Walk
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 2ed981abe5f939d42a2c7bc8aaba19c4, type: 3}
+    - {fileID: 8300000, guid: a3abd5fed9bf422468002b78cc715dad, type: 3}
+    - {fileID: 8300000, guid: 385567f673ebbd74e897d53f8acd45bf, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -50,7 +53,10 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Footstep.Run
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 2ed981abe5f939d42a2c7bc8aaba19c4, type: 3}
+    - {fileID: 8300000, guid: a3abd5fed9bf422468002b78cc715dad, type: 3}
+    - {fileID: 8300000, guid: 385567f673ebbd74e897d53f8acd45bf, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -85,7 +91,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Attack
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: e7616920abfe3f44288d3e2330d2ef12, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -120,7 +127,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Roar
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: f4d67787ea9728f41a1ea9ff04de95c1, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
