@@ -55,6 +55,7 @@ public class IntroCutscene : MonoBehaviour {
 
         // ② まばたき
         for (int i = 0; i < blinkCount; i++) {
+            Audio.Post("SE.Player.Cutscene.Blink");
             yield return Fade(0f, 1f, blinkDuration * 0.4f);
             yield return new WaitForSeconds(blinkDuration * 0.2f);
             yield return Fade(1f, 0f, blinkDuration * 0.4f);
@@ -73,6 +74,7 @@ public class IntroCutscene : MonoBehaviour {
         if (player != null && familyPhoto != null) {
             var inv = player.GetComponent<Inventory>();
             if (inv != null) inv.TryAdd(familyPhoto);
+            Audio.Post("SE.Player.Item.Pickup");
         }
 
         // ⑤ 写真立て（額縁ごと）を焼き込み済みの静止画で全画面フェード表示
@@ -93,6 +95,7 @@ public class IntroCutscene : MonoBehaviour {
         yield return new WaitForSeconds(1.2f); // 浸水の絶望を噛みしめる間
 
         // ⑦ 立ち上がる（正面へ）
+        Audio.Post("SE.Player.Cutscene.StandUp");
         yield return RotateCamera(floorPitch, 0f, standPitch, 0f, standUpTime);
 
         // 操作復帰
