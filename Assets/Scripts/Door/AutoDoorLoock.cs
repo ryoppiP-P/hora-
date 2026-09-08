@@ -13,6 +13,11 @@ public class AutoDoorLock : Interactable {
 
     public override string PromptText => isLocked ? "解錠する" : "開ける";
 
+    void Start() {
+        // Bossの通行判定用に、ドア側へ現在の鍵状態を同期しておく
+        if (door != null) door.SetLocked(isLocked);
+    }
+
     public override void OnInteractComplete(Player player) {
         if (!isLocked) {
             // すでに解錠済み → ドア開閉トグル
@@ -47,6 +52,7 @@ public class AutoDoorLock : Interactable {
 
     private void Unlock() {
         isLocked = false;
+        if (door != null) door.SetLocked(false);
         Debug.Log("[AutoDoorLock] 解錠");
         Audio.Post("SE.Player.Door.Large.Unlock", transform.position);
         door.Open();

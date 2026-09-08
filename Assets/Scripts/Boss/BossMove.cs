@@ -42,6 +42,9 @@ public class BossMove : MonoBehaviour
     [SerializeField] private float attackWindupTime = 0.5f;       // 攻撃が当たるまでの溜め時間
     [SerializeField] private float attackKillDistance = 1.5f;     // この距離以内なら即死
 
+    [Header("ドア強制突破設定")]
+    [SerializeField] private float doorBreakRadius = 2.2f; // この範囲内の鍵なしドアを強制的に開け放つ
+
     [Header("足音設定")]
     [SerializeField] private float footstepWalkInterval = 0.6f; // 巡回時(歩き)の足音間隔(秒)
     [SerializeField] private float footstepRunInterval = 0.4f;  // 音を聞いた時(走り)の足音間隔(秒)
@@ -144,6 +147,7 @@ public class BossMove : MonoBehaviour
         UpdateFootstepSE();
         UpdateAmbientRoar();
         UpdateSpawnWallRoar();
+        UpdateDoorBreaking();
     }
 
     // ============================================
@@ -327,6 +331,30 @@ public class BossMove : MonoBehaviour
 
                 // 直後に定期うなり声が重ならないよう周期を再抽選しておく
                 ambientRoarTimer = Random.Range(ambientRoarMinInterval, ambientRoarMaxInterval);
+            }
+        }
+    }
+
+    // 移動中に近くの鍵なしドアがあれば、止まらずに強制的に開け放って進む
+    private void UpdateDoorBreaking()
+    {
+        if (agent == null || !agent.isOnNavMesh || agent.isStopped) return;
+        if (agent.velocity.sqrMagnitude < 0.01f) return;
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, doorBreakRadius, ~0, QueryTriggerInteraction.Ignore);
+        foreach (var col in hits)
+        {
+            GrabbableDoor gDoor = col.GetComponentInParent<GrabbableDoor>();
+            if (gDoor != null)
+            {
+                if (!gDoor.IsLocked) gDoor.BossForceOpen(transform.position);
+                continue;
+            }
+
+            AutoDoor aDoor = col.GetComponentInParent<AutoDoor>();
+            if (aDoor != null && !aDoor.IsLocked)
+            {
+                aDoor.BossForceOpen();
             }
         }
     }
