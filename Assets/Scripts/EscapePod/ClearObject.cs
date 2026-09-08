@@ -19,6 +19,12 @@ public class ClearObject : Interactable {
     [SerializeField] private Light indicatorLight;
     [SerializeField] private Color unlockedColor = Color.green;
 
+    [Header("ロックランプ (コンソール上部のへこみの発光板)")]
+    [SerializeField] private Renderer lockLamp;   // 発光板のRenderer
+    [SerializeField] private Color lampLockedColor = new Color(1f, 0.08f, 0.06f);   // 起動前の色
+    [SerializeField] private Color lampUnlockedColor = new Color(0.1f, 1f, 0.25f);  // 起動後の色
+    [SerializeField] private float lampBrightness = 1f;
+
     [Header("Clear Delay")]
     [Tooltip("起動からクリア画面表示までの待機時間(秒)")]
     [SerializeField] private float clearDelay = 2.5f;
@@ -41,6 +47,46 @@ public class ClearObject : Interactable {
         if (hatch != null) {
             hatchStartPos = hatch.localPosition;
             hatchTargetPos = hatchStartPos;
+        }
+        ApplyLampColor();
+    }
+
+#if UNITY_EDITOR
+    // Inspectorで色をいじった時、エディタ上でも反映されるようにしておく
+    private void OnValidate() {
+        ApplyLampColor();
+    }
+#endif
+
+    /// <summary>起動前は赤、起動後は緑にランプを光らせる</summary>
+    private void ApplyLampColor() {
+        if (lockLamp == null) return;
+
+        Color baseColor = isActivated ? lampUnlockedColor : lampLockedColor;
+        Color c = new Color(baseColor.r * lampBrightness,
+                            baseColor.g * lampBrightness,
+                            baseColor.b * lampBrightness, 1f);
+
+        // マテリアルは共有アセットなので、個体ごとの色はPropertyBlockで与える
+        var block = new MaterialPropertyBlock();
+        lockLamp.GetPropertyBlock(block);
+        block.SetColor("_BaseColor", c);
+        block.SetColor("_Color", c);
+        block.SetColor("_EmissionColor", c);
+        lockLamp.SetPropertyBlock(block);
+    }
+
+    /// <summary>エンディング演出用：開いたドアを閉じ始める</summary>
+    public void CloseHatch() {
+        if (hatch == null) return;
+        hatchTargetPos = hatchStartPos;
+    }
+
+    /// <summary>ドアが閉じ切ったか</summary>
+    public bool IsHatchClosed {
+        get {
+            if (hatch == null) return true;
+            return (hatch.localPosition - hatchStartPos).sqrMagnitude < 0.0001f;
         }
     }
 
@@ -88,6 +134,7 @@ public class ClearObject : Interactable {
         if (steamEffect != null) steamEffect.Play();
         if (indicatorLight != null) indicatorLight.color = unlockedColor;
         if (hatch != null) hatchTargetPos = hatchStartPos + hatchOpenOffset;
+        ApplyLampColor();
 
         Invoke(nameof(FireClear), clearDelay);
     }
