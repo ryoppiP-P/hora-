@@ -25,8 +25,8 @@ MonoBehaviour:
     pitchRange: {x: 1, y: 1}
     loop: 0
     maxSimultaneous: 4
-    use3D: 0
-    maxDistance: 25
+    use3D: 1
+    maxDistance: 50
     navMeshSampleRadius: 3
     attenuationCurve:
       serializedVersion: 2
@@ -63,8 +63,8 @@ MonoBehaviour:
     pitchRange: {x: 1, y: 1}
     loop: 0
     maxSimultaneous: 4
-    use3D: 0
-    maxDistance: 25
+    use3D: 1
+    maxDistance: 50
     navMeshSampleRadius: 3
     attenuationCurve:
       serializedVersion: 2
@@ -99,8 +99,8 @@ MonoBehaviour:
     pitchRange: {x: 1, y: 1}
     loop: 0
     maxSimultaneous: 4
-    use3D: 0
-    maxDistance: 25
+    use3D: 1
+    maxDistance: 50
     navMeshSampleRadius: 3
     attenuationCurve:
       serializedVersion: 2
@@ -135,8 +135,8 @@ MonoBehaviour:
     pitchRange: {x: 1, y: 1}
     loop: 0
     maxSimultaneous: 4
-    use3D: 0
-    maxDistance: 25
+    use3D: 1
+    maxDistance: 75
     navMeshSampleRadius: 3
     attenuationCurve:
       serializedVersion: 2

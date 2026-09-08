@@ -6,45 +6,62 @@ public class BossMove : MonoBehaviour
 {
     public enum AIState
     {
-        Inactive,    // 通路を通るまでの待機状態（起動前）/ ポッド起動後の完全停止
+        Inactive,    // 隔壁を通るまでの待機状態（起動前）/ ポッド起動後の完全停止
         Patrol,      // ランダム巡回
-        Investigate, // 音の聞こえた場所へ移動
-        Alert,       // 到着して周囲を警戒
+        Investigate, // 音の方向した場所へ移動
+        Alert,       // 見失って周囲を警戒
         Attack       // プレイヤーを攻撃
     }
 
     [Header("AI状態")]
     [SerializeField] private AIState currentState = AIState.Inactive; // 初期状態（デフォルトは待機）
-    [SerializeField] private bool startsActive = false;               // 最初から動かしたいシーン用のフラグ
+    [SerializeField] private bool startsActive = false;               // 最初から動き始めるシーン用のフラグ
 
     [Header("脱出ポッド設定")]
     [SerializeField] private ClearObject clearObject;                 // 脱出ポッドの参照（OnActivated購読用）
 
     [Header("移動速度設定")]
     [SerializeField] private float patrolSpeed = 3.5f;      // 巡回時の移動速度
-    [SerializeField] private float investigateSpeed = 6.0f;  // 音検知時の移動速度
+    [SerializeField] private float investigateSpeed = 6.0f;  // 音を聞いた時の移動速度
 
     [Header("巡回設定")]
     [SerializeField] private float patrolRadius = 15f;        // 巡回エリアの半径
     [SerializeField] private float patrolWaitTime = 1f;        // 到着後の待機時間
 
     [Header("聴覚設定")]
-    [SerializeField] private float maxHearingDistance = 20f;  // 音が届く限界距離
-    [SerializeField] private float hearThreshold = 0.05f;     // 感知に必要な最小音量
-    [SerializeField] private bool useDirectionTarget = true;  // true: 音が聞こえた角へ向かう / false: 音源の位置へ直行
+    [SerializeField] private float maxHearingDistance = 20f;  // 音を聞ける限界距離
+    [SerializeField] private float hearThreshold = 0.05f;     // 検知に必要な最小音量
+    [SerializeField] private bool useDirectionTarget = true;  // true: 音が発生した方角へ向かう / false: 音源の位置へ直行
 
     [Header("警戒設定")]
-    [SerializeField] private float alertDuration = 3f;        // 音の場所で警戒する時間（秒）
+    [SerializeField] private float alertDuration = 3f;        // その場所で警戒する時間（秒）
 
     [Header("攻撃設定")]
     [SerializeField] private Player player;                  // プレイヤー参照
     [SerializeField] private float attackTriggerDistance = 0.5f;  // Attackに入る距離
-    [SerializeField] private float attackWindupTime = 0.5f;       // 攻撃発動までの溜め時間
-    [SerializeField] private float attackKillDistance = 1.5f;     // この距離以内なら殺せる
+    [SerializeField] private float attackWindupTime = 0.5f;       // 攻撃が当たるまでの溜め時間
+    [SerializeField] private float attackKillDistance = 1.5f;     // この距離以内なら即死
+
+    [Header("足音設定")]
+    [SerializeField] private float footstepWalkInterval = 0.6f; // 巡回時(歩き)の足音間隔(秒)
+    [SerializeField] private float footstepRunInterval = 0.4f;  // 音を聞いた時(走り)の足音間隔(秒)
+
+    [Header("うなり声(定期)設定")]
+    [SerializeField] private float ambientRoarMinInterval = 25f; // 次のうなり声までの最短時間(秒)
+    [SerializeField] private float ambientRoarMaxInterval = 35f; // 次のうなり声までの最長時間(秒)
+
+    [Header("スポーン壁の通過による強制うなり声")]
+    [SerializeField] private Collider bossSpawnWallCollider; // BossSpawnWallColliderを割り当てる
+    [SerializeField] private float spawnWallRoarDelay = 1f;   // 通過してから鳴くまでの時間(秒)
 
     private NavMeshAgent agent;
     private float timer;
     private float attackTimer = 0f;
+    private float footstepTimer = 0f;
+    private float ambientRoarTimer = 0f;
+    private bool wasInsideSpawnWall = false;
+    private bool hasPassedSpawnWall = false;
+    private float spawnWallRoarTimer = -1f; // -1なら未計測。0以上でspawnWallRoarDelayまで加算する
     private bool isPodActivated = false; // 脱出ポッドが起動済みかどうかのフラグ
 
     private void Awake()
@@ -66,7 +83,7 @@ public class BossMove : MonoBehaviour
 
     private void OnDisable()
     {
-        // オブジェクト非アクティブ時
+        // オブジェクト非アクティブ化
         SoundSystem.OnSound -= HandleSound;
 
         // 脱出ポッドのアクティベートイベント購読解除
@@ -81,7 +98,7 @@ public class BossMove : MonoBehaviour
         // 初期状態の速度をセット
         agent.speed = patrolSpeed;
 
-        // 最初から動かすフラグが立っている場合は起動
+        // 最初から動き始めるフラグが立っている場合は起動
         if (startsActive)
         {
             ActivateBoss();
@@ -93,36 +110,40 @@ public class BossMove : MonoBehaviour
         // 待機状態、またはポッド起動後なら移動・攻撃の判定を行わない
         if (currentState == AIState.Inactive || isPodActivated) return;
 
-        // Attack以外の状態のとき、プレイヤーが近ければAttackへ遷移
+        // Attack以外の状態のとき、プレイヤーが近づいたらAttackへ遷移
         if (currentState != AIState.Attack && player != null && !player.IsDead)
         {
-           
+
             float dist = Vector3.Distance(transform.position, player.transform.position);
             if (dist <= attackTriggerDistance)
             {
-               
+
                 EnterAttack();
             }
         }
 
         switch (currentState) {
             case AIState.Patrol:
-           
+
                 UpdatePatrol();
                 break;
         case AIState.Investigate:
-           
+
                 UpdateInvestigate();
                 break;
         case AIState.Alert:
-           
+
                 UpdateAlert();
                 break;
         case AIState.Attack:
-           
+
                 UpdateAttack();
                 break;
         }
+
+        UpdateFootstepSE();
+        UpdateAmbientRoar();
+        UpdateSpawnWallRoar();
     }
 
     // ============================================
@@ -133,7 +154,7 @@ public class BossMove : MonoBehaviour
         isPodActivated = true;
         currentState = AIState.Inactive;
 
-        // NavMeshAgentを停止して現在の経路をクリア
+        // NavMeshAgentを止めて現在の経路をクリア
         if (agent != null && agent.isActiveAndEnabled)
         {
             agent.isStopped = true;
@@ -142,16 +163,19 @@ public class BossMove : MonoBehaviour
     }
 
     // ============================================
-    // ボス起動処理（トリガーから呼び出し）
+    // ボス起動処理（トリガーから呼び出す）
     // ============================================
     public void ActivateBoss()
     {
-        // ポッド起動後や、既に動いている場合は実行しない
+        // ポッド起動が既に入っている場合は実行しない
         if (isPodActivated) return;
         if (currentState != AIState.Inactive && startsActive) return;
 
         currentState = AIState.Patrol;
         SetNextRandomDestination();
+
+        // 起動直後から一定時間は無音にせず、25～35秒後に最初のうなり声を出す
+        ambientRoarTimer = Random.Range(ambientRoarMinInterval, ambientRoarMaxInterval);
     }
 
     // ============================================
@@ -159,9 +183,10 @@ public class BossMove : MonoBehaviour
     // ============================================
     private void EnterAttack()
     {
-       
+
         currentState = AIState.Attack;
         attackTimer = 0f;
+        Audio.Post("SE.Boss.Roar", transform.position);
 
         // 停止
         agent.isStopped = true;
@@ -173,7 +198,7 @@ public class BossMove : MonoBehaviour
     // ============================================
     private void UpdatePatrol()
     {
-        // 目的地に到達したか判定
+        // 目的地に到達したら判定
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
             timer += Time.deltaTime;
@@ -187,7 +212,7 @@ public class BossMove : MonoBehaviour
 
     private void UpdateInvestigate()
     {
-        // 音の場所に到達したら警戒状態へ移行
+        // その場所に到達したら警戒状態へ移行
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
             currentState = AIState.Alert;
@@ -211,7 +236,7 @@ public class BossMove : MonoBehaviour
 
     private void UpdateAttack()
     {
-       
+
         if (player == null || player.IsDead) return;
 
         attackTimer += Time.deltaTime;
@@ -219,11 +244,12 @@ public class BossMove : MonoBehaviour
         // 溜め時間経過で判定
         if (attackTimer >= attackWindupTime)
         {
-           
+            Audio.Post("SE.Boss.Attack", transform.position);
+
             float dist = Vector3.Distance(transform.position, player.transform.position);
             if (dist <= attackKillDistance)
             {
-               
+
                 player.Kill();
             }
 
@@ -235,14 +261,85 @@ public class BossMove : MonoBehaviour
     }
 
     // ============================================
-    // 音を受信したときの処理
+    // 足音・うなり声のSE更新処理
+    // ============================================
+    private void UpdateFootstepSE()
+    {
+        if (agent == null || !agent.isOnNavMesh || agent.isStopped)
+        {
+            footstepTimer = 0f;
+            return;
+        }
+
+        bool isMoving = agent.velocity.sqrMagnitude > 0.01f;
+        if (!isMoving)
+        {
+            footstepTimer = 0f;
+            return;
+        }
+
+        // Investigate/Alertの移動速度(investigateSpeed)なら走り、それ以外(Patrol)は歩き扱い
+        bool isRunning = agent.speed >= investigateSpeed - 0.01f;
+        string key = isRunning ? "SE.Boss.Footstep.Run" : "SE.Boss.Footstep.Walk";
+        float interval = isRunning ? footstepRunInterval : footstepWalkInterval;
+
+        footstepTimer -= Time.deltaTime;
+        if (footstepTimer <= 0f)
+        {
+            Audio.Post(key, transform.position);
+            footstepTimer = interval;
+        }
+    }
+
+    private void UpdateAmbientRoar()
+    {
+        ambientRoarTimer -= Time.deltaTime;
+        if (ambientRoarTimer <= 0f)
+        {
+            Audio.Post("SE.Boss.Roar", transform.position);
+            ambientRoarTimer = Random.Range(ambientRoarMinInterval, ambientRoarMaxInterval);
+        }
+    }
+
+    // BossSpawnWallColliderの範囲を通り過ぎた瞬間を検知し、
+    // spawnWallRoarDelay秒後に強制的に一度だけうなり声を鳴らす
+    private void UpdateSpawnWallRoar()
+    {
+        if (bossSpawnWallCollider != null && !hasPassedSpawnWall)
+        {
+            bool isInside = bossSpawnWallCollider.bounds.Contains(transform.position);
+            if (wasInsideSpawnWall && !isInside)
+            {
+                // 壁の内側から外側へ出た瞬間＝通り過ぎた
+                hasPassedSpawnWall = true;
+                spawnWallRoarTimer = 0f;
+            }
+            wasInsideSpawnWall = isInside;
+        }
+
+        if (spawnWallRoarTimer >= 0f)
+        {
+            spawnWallRoarTimer += Time.deltaTime;
+            if (spawnWallRoarTimer >= spawnWallRoarDelay)
+            {
+                Audio.Post("SE.Boss.Roar", transform.position);
+                spawnWallRoarTimer = -1f; // 一度だけ。以降は発火しない
+
+                // 直後に定期うなり声が重ならないよう周期を再抽選しておく
+                ambientRoarTimer = Random.Range(ambientRoarMinInterval, ambientRoarMaxInterval);
+            }
+        }
+    }
+
+    // ============================================
+    // 音を受信した時の処理
     // ============================================
     private void HandleSound(SoundInfo info)
     {
-        // 待機状態またはポッド起動後なら音に反応しない
+        // 待機状態またはポッド起動後は音に反応しない
         if (currentState == AIState.Inactive || isPodActivated) return;
 
-        // 自身が出した音なら無視
+        // 自分が出した音なら無視
         if (info.source == gameObject) return;
 
         // 音が聞こえるか計算
@@ -257,10 +354,10 @@ public class BossMove : MonoBehaviour
             // 減衰後の音量が設定した閾値を超えているか確認
             if (perceived >= hearThreshold)
             {
-                // 音の発生源または聞こえてくる角の位置を取得
+                // 音の発生元または方向している角の位置を取得
                 Vector3 targetPosition = useDirectionTarget ? directionTarget : info.position;
 
-                // 音に反応したら移動速度を変更して目的地へ設定
+                // 音に反応した移動速度へ変更して目的地へ設定
                 agent.speed = investigateSpeed;
                 agent.SetDestination(targetPosition);
                 currentState = AIState.Investigate;
@@ -292,7 +389,7 @@ public class BossMove : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, patrolRadius);
 
-        // 聴覚範囲の可視化（青色）
+        // 聴覚範囲の可視化（青）
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, maxHearingDistance);
     }
