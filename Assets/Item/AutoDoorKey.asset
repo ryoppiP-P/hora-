@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: AutoDoorKey
   m_EditorClassIdentifier: Assembly-CSharp::ItemBase
   itemName: DoorKey
-  icon: {fileID: 21300000, guid: 2d211fac8d42bb741a45c7e16c71b3e8, type: 3}
+  icon: {fileID: 21300000, guid: b2138a7006380c9498bc5c68f6823e08, type: 3}
   worldPrefab: {fileID: 319423079773487643, guid: 31d8d497f222b2f4694eb05c92131e74, type: 3}
