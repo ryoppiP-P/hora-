@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class GrabbableDoor : Interactable {
@@ -33,6 +35,13 @@ public class GrabbableDoor : Interactable {
     [SerializeField] private Inventory inventory;       // インベントリ
     [SerializeField] private GrabbableDoor[] linkedDoors; // 連動して解錠される他のドア（同じ鍵を使う場合など）
 
+    [Header("Boss通行止めの範囲 (シーンビューの赤い箱)")]
+    [SerializeField] private Vector3 bossBlockCenter = Vector3.zero; // ローカル座標での中心
+    [SerializeField] private Vector3 bossBlockSize = Vector3.zero;   // ローカル座標でのサイズ（0なら実行時にドアから自動計算）
+    [SerializeField] private float bossBlockMinThickness = 1f;   // 薄い軸をこの厚みまで太らせる（NavMeshのボクセル0.17より薄いと穴が開かない）
+    [SerializeField] private float bossBlockWidthPadding = 0.3f; // 幅方向に持たせる余裕
+    [SerializeField] private float bossBlockHeightPadding = 0.5f; // 上下に持たせる余裕（床のNavMeshを確実に貫くため）
+
     public override string PromptText => isLocked ? "鍵がかかっている" : "掴んで開く";
     public bool IsLocked => isLocked;
 
@@ -49,6 +58,7 @@ public class GrabbableDoor : Interactable {
     private float targetAngle;    // マウス操作で決まる目標角度
     private float angleVelocity;  // SmoothDamp用の内部速度
     private AudioHandle creakHandle; // AudioManager経由で再生中のきしみ音
+    private NavMeshObstacle navObstacle; // ロック中はBossの経路から除外するための障害物
 
     private float lastFixedAngularSpeed; // FixedUpdateで計測した実際の角速度(度/秒)
     private float smoothedAngularSpeed;  // それを平滑化したもの
@@ -78,6 +88,20 @@ public class GrabbableDoor : Interactable {
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         if (interactor != null) playerCollider = interactor.GetComponent<Collider>();
+
+        // ロック中はNavMeshObstacleでBossの経路から除外する（鍵が開いたら自動的に解除）
+        navObstacle = GetComponent<NavMeshObstacle>();
+        if (navObstacle == null) navObstacle = gameObject.AddComponent<NavMeshObstacle>();
+        navObstacle.shape = NavMeshObstacleShape.Box;
+        navObstacle.carveOnlyStationary = false;
+        navObstacle.carving = true;
+
+        // Inspectorで範囲が入っていなければドアの実寸から求める
+        if (bossBlockSize.sqrMagnitude < 0.0001f) FitBossBlockToDoor();
+
+        navObstacle.center = bossBlockCenter;
+        navObstacle.size = bossBlockSize;
+        UpdateBossBlock();
     }
 
     void Start() {
@@ -276,12 +300,99 @@ public class GrabbableDoor : Interactable {
     void UnlockInternal(bool propagate) {
         if (!isLocked) return;
         isLocked = false;
+        UpdateBossBlock();
 
         if (propagate && linkedDoors != null) {
             foreach (var d in linkedDoors) {
                 if (d != null && d != this) d.UnlockInternal(false);
             }
         }
+    }
+
+    /// <summary>鍵の状態に応じてBoss用のNavMeshObstacleを切り替える</summary>
+    void UpdateBossBlock() {
+        if (navObstacle != null) navObstacle.enabled = isLocked;
+    }
+
+    /// <summary>
+    /// ドアのBoxColliderからBoss通行止めの範囲を求め、bossBlockCenter/bossBlockSizeへ入れ直す。
+    /// ドア板は厚み0.08しかなくNavMeshのボクセル(0.17)より薄いため、そのままでは穴が開かない。
+    /// Inspectorの歯車メニューから手動でも実行できる。
+    /// </summary>
+    [ContextMenu("Boss通行止めの範囲をドアに合わせる")]
+    public void FitBossBlockToDoor() {
+        BoxCollider target = box != null ? box : GetComponent<BoxCollider>();
+        if (target == null) return;
+
+        Vector3 size = target.size;
+        if (size.x < size.z) {
+            size.x = Mathf.Max(size.x, bossBlockMinThickness);
+            size.z += bossBlockWidthPadding;
+        } else {
+            size.z = Mathf.Max(size.z, bossBlockMinThickness);
+            size.x += bossBlockWidthPadding;
+        }
+
+        // 床のNavMeshを確実に貫くよう、上下にも余裕を持たせる
+        size.y += bossBlockHeightPadding * 2f;
+
+        bossBlockCenter = target.center;
+        bossBlockSize = size;
+
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+#endif
+    }
+
+    // ロック中のドアは、Bossが通れない範囲を赤い箱でシーンビューに表示する
+    void OnDrawGizmos() {
+        if (!isLocked) return;
+        if (bossBlockSize.sqrMagnitude < 0.0001f) return;
+
+        Gizmos.matrix = transform.localToWorldMatrix;
+        Gizmos.color = new Color(1f, 0.15f, 0.15f, 0.25f);
+        Gizmos.DrawCube(bossBlockCenter, bossBlockSize);
+        Gizmos.color = new Color(1f, 0.15f, 0.15f, 1f);
+        Gizmos.DrawWireCube(bossBlockCenter, bossBlockSize);
+        Gizmos.matrix = Matrix4x4.identity;
+    }
+
+    /// <summary>
+    /// Bossが鍵のかかっていないドアに近づいた時に、勢いよく強制的に開け放つ。
+    /// プレイヤー操作時の滑らかな開閉とは別に、一瞬で全開まで飛ばす。
+    /// </summary>
+    public void BossForceOpen(Vector3 fromPosition) {
+        if (isLocked) return;
+        if (isGrabbed) return; // プレイヤー操作中は奪わない
+
+        float openRange = Mathf.Max(Mathf.Abs(minAngle), Mathf.Abs(maxAngle), 0.01f);
+        if (Mathf.Abs(currentAngle) / openRange >= 0.9f) return; // 既に十分開いている
+
+        // Boss側から見て奥へ開く方向を選ぶ
+        Vector3 localFrom = transform.InverseTransformPoint(fromPosition);
+        float primary = localFrom.x >= 0f ? minAngle : maxAngle;
+        float alt = localFrom.x >= 0f ? maxAngle : minAngle;
+        float chosen = IsBlocked(primary) ? alt : primary;
+        if (IsBlocked(chosen)) return; // 両方塞がっているなら諦める
+
+        targetAngle = chosen;
+        currentAngle = chosen;
+        angleVelocity = 0f;
+        lastFixedAngularSpeed = 0f;
+        rb.MoveRotation(WorldRotationAt(currentAngle));
+
+        StartCoroutine(BurstOpenSoundRoutine());
+    }
+
+    /// <summary>強制開放時のきしみ音を、大音量・高ピッチで一瞬だけ鳴らす</summary>
+    IEnumerator BurstOpenSoundRoutine() {
+        AudioHandle burstHandle = Audio.Post("SE.Player.Door.Hinged.Open", transform.position);
+        if (burstHandle != null) {
+            burstHandle.SetVolume(maxCreakVolume);
+            burstHandle.SetPitch(maxCreakPitch + 0.3f);
+        }
+        yield return new WaitForSeconds(0.35f);
+        if (burstHandle != null) burstHandle.Stop();
     }
 
     void Release() {
