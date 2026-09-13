@@ -16,9 +16,9 @@ MonoBehaviour:
   entries:
   - key: Footstep.Walk
     clips:
-    - {fileID: 8300000, guid: 57b46cd1ddf24687a34d4a3ac7b9e48e, type: 3}
-    - {fileID: 8300000, guid: 06116276425d4a3ba7adcac56c3e855f, type: 3}
-    - {fileID: 8300000, guid: 5a908ddd6c214c80a82d9d234ffd2fde, type: 3}
+    - {fileID: 8300000, guid: 6ec68eef5bc067946971727466a603e0, type: 3}
+    - {fileID: 8300000, guid: e169c0dff0dfddb4e9574f8df0a5645e, type: 3}
+    - {fileID: 8300000, guid: 7a92631fec992514fbac5a369127fec9, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -95,9 +95,9 @@ MonoBehaviour:
       m_RotationOrder: 4
   - key: Footstep.Run
     clips:
-    - {fileID: 8300000, guid: 57b46cd1ddf24687a34d4a3ac7b9e48e, type: 3}
-    - {fileID: 8300000, guid: 06116276425d4a3ba7adcac56c3e855f, type: 3}
-    - {fileID: 8300000, guid: 5a908ddd6c214c80a82d9d234ffd2fde, type: 3}
+    - {fileID: 8300000, guid: 6ec68eef5bc067946971727466a603e0, type: 3}
+    - {fileID: 8300000, guid: e169c0dff0dfddb4e9574f8df0a5645e, type: 3}
+    - {fileID: 8300000, guid: 7a92631fec992514fbac5a369127fec9, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}
@@ -386,7 +386,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   - key: Door.Large.Unlock
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 680b3a4bddb299e4b8574d731ad71512, type: 3}
     clipSelection: 0
     outputMixerGroup: {fileID: 0}
     volumeRange: {x: 1, y: 1}

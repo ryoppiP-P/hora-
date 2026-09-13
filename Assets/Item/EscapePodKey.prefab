@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 5698381784133681995}
   - component: {fileID: 7478414581606472072}
   - component: {fileID: 7025461567448330605}
-  - component: {fileID: 1464539498470641905}
   - component: {fileID: 1088228151363408107}
   - component: {fileID: -2679674254016276347}
+  - component: {fileID: 5410032186348650347}
   m_Layer: 7
   m_Name: EscapePodKey
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -136.79735, y: -0.57815, z: -18.246}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 2.66, y: 2.66, z: 2.66}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -43,7 +43,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 319423079773487643}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -6302040336306965830, guid: fe944d62c0b9ff14091ae7b8ad3b2a4b, type: 3}
 --- !u!23 &7025461567448330605
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -69,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0841fd779a7bce84591fe750b4d66126, type: 2}
+  - {fileID: 2100000, guid: 5297ce0a9aa746c42987e58cd7ffffaf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -93,27 +93,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1464539498470641905
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 319423079773487643}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1088228151363408107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,5 +120,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableHighlight
   outlineMaterial: {fileID: 2100000, guid: 96224fd5bfa0f7e4d926e19d04cce526, type: 2}
+  dimOutlineMaterial: {fileID: 0}
   includeChildren: 1
   alwaysOn: 1
+--- !u!64 &5410032186348650347
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 319423079773487643}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6302040336306965830, guid: fe944d62c0b9ff14091ae7b8ad3b2a4b, type: 3}

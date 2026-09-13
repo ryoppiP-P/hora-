@@ -145,7 +145,10 @@ public class InventoryUI : MonoBehaviour {
             return;
         }
 
-        // 通常モード：既存の取り出し処理
+        // 通常モード：投擲アイテムだけ取り出せる。
+        // それ以外（鍵・ノート・写真など）はクリックしても何もしない（誤って落とさないように）
+        if (item.worldPrefab == null || item.worldPrefab.GetComponent<Throwable>() == null) return;
+
         var taken = inventory.TakeAt(index);
         if (taken == null || taken.worldPrefab == null) return;
 
