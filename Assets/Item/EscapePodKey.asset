@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd5b1314f8efc634cb92b5f87bb644d3, type: 3}
   m_Name: EscapePodKey
   m_EditorClassIdentifier: Assembly-CSharp::ItemBase
-  itemName: DoorKey
+  itemName: "\u8131\u51FA\u30DD\u30C3\u30C9\u306E\u9375"
   icon: {fileID: 21300000, guid: e87452d678119854e9fabbea05e3c75f, type: 3}
   worldPrefab: {fileID: 319423079773487643, guid: 9b930bfb283820345901e096ebd0a696, type: 3}
