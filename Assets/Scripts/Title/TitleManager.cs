@@ -16,6 +16,9 @@ public class TitleManager : MonoBehaviour {
     [Header("Scene")]
     [SerializeField] private string gameSceneName = "GameScene";
 
+    [Header("Fade")]
+    [SerializeField] private float fadeDuration = 0.5f;
+
     private void Start() {
         // タイトルではカーソル表示
         Cursor.lockState = CursorLockMode.None;
@@ -32,6 +35,8 @@ public class TitleManager : MonoBehaviour {
 
         if (closeSettingsButton != null)
             closeSettingsButton.onClick.AddListener(CloseSettings);
+
+        FadeManager.FadeIn(fadeDuration);
     }
 
     private void Update() {
@@ -45,20 +50,25 @@ public class TitleManager : MonoBehaviour {
     }
 
     private void OnStartClicked() {
-        SceneManager.LoadScene(gameSceneName);
+        Audio.Post("SE.UI.Confirm");
+        OpeningMovie.ShouldPlay = true; // タイトル→ゲームの時だけオープニング動画を流す
+        FadeManager.FadeOut(gameSceneName, fadeDuration);
     }
 
     private void OnSettingsClicked() {
+        Audio.Post("SE.UI.Confirm");
         if (settingsPanel != null)
             settingsPanel.SetActive(true);
     }
 
     public void CloseSettings() {
+        Audio.Post("SE.UI.Confirm");
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
     }
 
     private void OnQuitClicked() {
+        Audio.Post("SE.UI.Confirm");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

@@ -1,0 +1,639 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9dfebd54aef48b48fc3ce82c6c66477, type: 3}
+  m_Name: Player
+  m_EditorClassIdentifier: Assembly-CSharp::AudioBank
+  bankType: 0
+  entries:
+  - key: Footstep.Walk
+    clips:
+    - {fileID: 8300000, guid: 6ec68eef5bc067946971727466a603e0, type: 3}
+    - {fileID: 8300000, guid: e169c0dff0dfddb4e9574f8df0a5645e, type: 3}
+    - {fileID: 8300000, guid: 7a92631fec992514fbac5a369127fec9, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 25
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Footstep.WalkUnderwater
+    clips:
+    - {fileID: 8300000, guid: 9ed779b24eaf49fda9a7c51c29d289e6, type: 3}
+    - {fileID: 8300000, guid: c8a905b946dc407ba5995b52293c0152, type: 3}
+    - {fileID: 8300000, guid: dd47c5b6e25944ecb52b6012c7af5348, type: 3}
+    - {fileID: 8300000, guid: ddce12896c4e4fcd8873efcaf36e1ec1, type: 3}
+    - {fileID: 8300000, guid: 84a06a5fc2414fa7b940e9e57bd260fe, type: 3}
+    - {fileID: 8300000, guid: 914814f717834af1a68fa19f1cf2d0f1, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 25
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Footstep.Run
+    clips:
+    - {fileID: 8300000, guid: 6ec68eef5bc067946971727466a603e0, type: 3}
+    - {fileID: 8300000, guid: e169c0dff0dfddb4e9574f8df0a5645e, type: 3}
+    - {fileID: 8300000, guid: 7a92631fec992514fbac5a369127fec9, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 25
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Breath.OutOfStamina
+    clips:
+    - {fileID: 8300000, guid: 1e241fd1b88025842a44d9855b16476b, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 0
+    maxDistance: 25
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Breath.Drowning
+    clips:
+    - {fileID: 8300000, guid: aed75501815d4800bd73c9ccd3fd28b6, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 0
+    maxDistance: 25
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Item.Pickup
+    clips:
+    - {fileID: 8300000, guid: e376667875829ca499033d205897eea4, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 25
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Can.Throw
+    clips:
+    - {fileID: 8300000, guid: 0b19649ae36efa74fbf3240e3d6663e3, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 37.5
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Can.Impact
+    clips:
+    - {fileID: 8300000, guid: 8056d7dd37414a8798a61d7f24a37944, type: 3}
+    - {fileID: 8300000, guid: 5e2d1ce3ed5f404984a6ddb5fcf85fcb, type: 3}
+    - {fileID: 8300000, guid: e9027ea63062433ba24d1367c1ac4423, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 37.5
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Door.Hinged.Open
+    clips:
+    - {fileID: 8300000, guid: 36e67bb5915de074b915ac4e11dbbeb7, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 1
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 37.5
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Door.AutomaticLarge.Open
+    clips:
+    - {fileID: 8300000, guid: 6bc5f86bc41309a439efb064e7f53315, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 37.5
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Door.Large.Unlock
+    clips:
+    - {fileID: 8300000, guid: 680b3a4bddb299e4b8574d731ad71512, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 37.5
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: EscapePod.Unlock
+    clips:
+    - {fileID: 8300000, guid: 680b3a4bddb299e4b8574d731ad71512, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 37.5
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Door.Key.Unlock
+    clips:
+    - {fileID: 8300000, guid: 30a0ab738d2aa334db703fb7426212be, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 37.5
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Door.Hinged.LockedRattle
+    clips:
+    - {fileID: 8300000, guid: c55f83d1e5634abd8c506def8b3c9d3c, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 37.5
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Console.UnlockError
+    clips:
+    - {fileID: 8300000, guid: 9688515abe76411ea37a461081a68967, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 37.5
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Cutscene.Blink
+    clips:
+    - {fileID: 8300000, guid: 77236f94163a9dd4b8f8ae878969821a, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 1, y: 1}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 25
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - key: Cutscene.StandUp
+    clips:
+    - {fileID: 8300000, guid: 07ee89605cba04f41863b8d2b86ff925, type: 3}
+    clipSelection: 0
+    outputMixerGroup: {fileID: 0}
+    volumeRange: {x: 1, y: 1}
+    pitchRange: {x: 0.01, y: 0.01}
+    loop: 0
+    maxSimultaneous: 4
+    use3D: 1
+    maxDistance: 25
+    navMeshSampleRadius: 3
+    attenuationCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1
+        outSlope: -1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4

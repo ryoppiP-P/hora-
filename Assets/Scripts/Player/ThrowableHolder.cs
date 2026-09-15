@@ -87,8 +87,10 @@ public class ThrowableHolder : MonoBehaviour {
     void ThrowHeld() {
         if (held == null) return;
         Vector3 v = GetThrowVelocity();
-        held.transform.position = GetThrowOrigin();
+        Vector3 origin = GetThrowOrigin();
+        held.transform.position = origin;
         held.Throw(v);
+        Audio.Post("SE.Player.Can.Throw", origin);
         held = null;
     }
 

@@ -12612,6 +12612,10 @@ MonoBehaviour:
   hearThreshold: 0.05
   useDirectionTarget: 0
   alertDuration: 3
+  player: {fileID: 0}
+  attackTriggerDistance: 0.5
+  attackWindupTime: 0.5
+  attackKillDistance: 1.5
 --- !u!195 &576835211
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -12,12 +12,14 @@ public class ButtonHoverStyle : MonoBehaviour,
     [SerializeField] private TMP_Text label;
 
     [Header("Normal")]
-    [SerializeField] private Color normalBg = new Color(1, 1, 1, 0);     // ����
-    [SerializeField] private Color normalText = Color.white;             // ������
+    [SerializeField] private Color normalBg = new Color(1, 1, 1, 0);     // ����
+    [SerializeField] private Color normalText = Color.white;             // ������
 
     [Header("Highlighted")]
-    [SerializeField] private Color hoverBg = Color.white;                // ���w�i
-    [SerializeField] private Color hoverText = Color.black;              // ������
+    [SerializeField] private Color hoverBg = Color.white;                // ���w�i
+    [SerializeField] private Color hoverText = Color.black;              // ������
+
+    private bool isHighlighted;
 
     void Awake() {
         Apply(false);
@@ -26,6 +28,13 @@ public class ButtonHoverStyle : MonoBehaviour,
     void Apply(bool hovered) {
         if (background != null) background.color = hovered ? hoverBg : normalBg;
         if (label != null) label.color = hovered ? hoverText : normalText;
+
+        // OnPointerEnterとOnSelectが同時に来た時に2回鳴らさないよう、
+        // 実際に非選択→選択へ切り替わった瞬間だけ再生する
+        if (hovered && !isHighlighted) {
+            Audio.Post("SE.UI.Select");
+        }
+        isHighlighted = hovered;
     }
 
     public void OnPointerEnter(PointerEventData e) => Apply(true);

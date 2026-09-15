@@ -19,10 +19,14 @@ public class InventoryUI : MonoBehaviour {
 
     [SerializeField] private ThrowableHolder throwableHolder; // 投げるときのオブジェクト保持用
 
+    [SerializeField] private PauseManager pauseManager;
+
     public bool IsOpen => panel != null && panel.activeSelf;
 
     // 選択モード
-    private GrabbableDoor pendingDoor; // 鍵選択待ちのドア
+    private GrabbableDoor pendingDoor;  // 鍵選択待ちの手動ドア
+    private AutoDoorLock pendingLock;   // 鍵選択待ちの自動ドア
+    private ClearObject pendingClear;   // 鍵選択街の脱出ポッド
 
     void Start() {
         panel.SetActive(false);
@@ -39,6 +43,8 @@ public class InventoryUI : MonoBehaviour {
     }
 
     void Update() {
+        if (pauseManager != null && pauseManager.IsPaused) return;
+        if (NoteReaderUI.IsOpen) return;
         var kb = Keyboard.current;
         if (kb == null) return;
 
@@ -46,6 +52,8 @@ public class InventoryUI : MonoBehaviour {
             if (IsOpen) {
                 // 選択モード中の閉じは選択キャンセル
                 pendingDoor = null;
+                pendingLock = null;
+                pendingClear = null;
             }
             Toggle(!IsOpen);
         }
@@ -53,6 +61,8 @@ public class InventoryUI : MonoBehaviour {
         // Escでもキャンセル
         if (IsOpen && kb.escapeKey.wasPressedThisFrame) {
             pendingDoor = null;
+            pendingLock = null;
+            pendingClear = null;
             Toggle(false);
         }
     }
@@ -72,6 +82,22 @@ public class InventoryUI : MonoBehaviour {
 
     public void OpenForKeySelection(GrabbableDoor door) {
         pendingDoor = door;
+        pendingLock = null;
+        pendingClear = null;
+        Toggle(true);
+    }
+
+    public void OpenForKeySelection(AutoDoorLock autoLock) {
+        pendingLock = autoLock;
+        pendingDoor = null;
+        pendingClear = null;
+        Toggle(true);
+    }
+
+    public void OpenForKeySelection(ClearObject clearObj) {
+        pendingClear = clearObj;
+        pendingDoor = null;
+        pendingLock = null;
         Toggle(true);
     }
 
@@ -79,7 +105,7 @@ public class InventoryUI : MonoBehaviour {
         var item = inventory.Slots[index]; // まだ取り出さない
         if (item == null) return;
 
-        // 鍵選択モードなら解錠試行
+        // 鍵選択モード（手動ドア）
         if (pendingDoor != null) {
             pendingDoor.TryUnlock(item);
             pendingDoor = null;
@@ -87,7 +113,42 @@ public class InventoryUI : MonoBehaviour {
             return;
         }
 
-        // 通常モード：既存の取り出し処理
+        // 鍵選択モード（自動ドア）
+        if (pendingLock != null) {
+            pendingLock.TryUnlock(item);
+            pendingLock = null;
+            Toggle(false);
+            return;
+        }
+
+        // 鍵選択モード（脱出ポッド）
+        if (pendingClear != null) {
+            pendingClear.TryUnlock(item);
+            pendingClear = null;
+            Toggle(false);
+            return;
+        }
+
+        // 通常モード：ノートは取り出さず、読み返すだけ
+        if (item is NoteItem note) {
+            Toggle(false);
+            var player = inventory.GetComponent<Player>();
+            if (player != null) NoteReaderUI.Show(note, player, null);
+            return;
+        }
+
+        // 通常モード：写真も取り出さず、読み返すだけ
+        if (item is PhotoItem photo) {
+            Toggle(false);
+            var player = inventory.GetComponent<Player>();
+            if (player != null) NoteReaderUI.Show(photo, player, null);
+            return;
+        }
+
+        // 通常モード：投擲アイテムだけ取り出せる。
+        // それ以外（鍵・ノート・写真など）はクリックしても何もしない（誤って落とさないように）
+        if (item.worldPrefab == null || item.worldPrefab.GetComponent<Throwable>() == null) return;
+
         var taken = inventory.TakeAt(index);
         if (taken == null || taken.worldPrefab == null) return;
 
