@@ -7422,6 +7422,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WaterBlock_50m
       objectReference: {fileID: 0}
+    - target: {fileID: 904002958909755717, guid: 08605b91fdb21ac4cbac6dee7e05c02d, type: 3}
+      propertyPath: minutesPerMeter
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 9132584202831668630, guid: 08605b91fdb21ac4cbac6dee7e05c02d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 16.17396
